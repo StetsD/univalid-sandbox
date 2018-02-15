@@ -1,6 +1,9 @@
+'use strict';
+
 const Univalid = require('./modules/univalid');
-const univalid = Univalid('test');
+const UnivalidStrategyDefault = require('./modules/univalid-strategy-default');
 
-const strategyDefault = require('./modules/univalid-strategy-default');
+const univalidStrategyDefault = new UnivalidStrategyDefault();
+const univalid = Univalid(univalidStrategyDefault);
 
-univalid.regStrategy(strategyDefault);
+univalid.check();

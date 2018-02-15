@@ -1,10 +1,8 @@
+'use strict';
+
 class UnivalidStrategy {
-    constructor(){
-
-    }
-
-    init(){
-
+    check(){
+        throw new Error('The "check" method must be defined in to the strategy of validation');
     }
 }
 
