@@ -2,6 +2,10 @@
 
 const UnivalidStrategy = require('./univalid-strategy');
 
+const validHandlers = {
+
+};
+
 class UnivalidStrategyDefault extends UnivalidStrategy {
     constructor(opt){
         super();
@@ -9,7 +13,11 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
 
 
     check(pack, core){
-        
+
+    }
+
+    regValidHandler(){
+
     }
 }
 
