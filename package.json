@@ -1,0 +1,27 @@
+{
+  "name": "univalid",
+  "version": "0.0.0",
+  "description": "uni validation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StetsD/univalid.git"
+  },
+  "keywords": [
+    "validation",
+    "validate",
+    "form"
+  ],
+  "author": "'DStets' <Dmitriy.Stets@isobar.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StetsD/univalid/issues"
+  },
+  "homepage": "https://github.com/StetsD/univalid#readme",
+  "devDependencies": {
+    "webpack": "^3.11.0"
+  }
+}
