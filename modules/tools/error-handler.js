@@ -15,4 +15,18 @@ function isObject(val, msg){
     return true;
 }
 
-module.exports = {notEmpty, isObject};
+function notZeroLength(val, msg){
+    if(Object.keys(val).length === 0)
+        throw new Error(msg);
+
+    return true;
+}
+
+function isFunc(val, msg){
+    if(typeof val !== 'function')
+        throw TypeError(msg);
+
+    return true;
+}
+
+module.exports = {notEmpty, isObject, notZeroLength};

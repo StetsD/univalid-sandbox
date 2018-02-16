@@ -1,9 +1,12 @@
 'use strict';
 
 const UnivalidStrategy = require('./univalid-strategy');
+const {notEmpty, isObject, notZeroLength} = require('./tools/error-handler');
 
 const validHandlers = {
+    'somecase': () => {
 
+    }
 };
 
 class UnivalidStrategyDefault extends UnivalidStrategy {
@@ -13,11 +16,11 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
 
 
     check(pack, core){
-
+        core.validate();
     }
 
-    regValidHandler(){
-
+    getValidationHandlers(){
+        return validHandlers;
     }
 }
 

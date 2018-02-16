@@ -5,8 +5,8 @@ class UnivalidStrategy {
         throw new Error('The "check" method must be defined in to the strategy of validation');
     }
 
-    regValidHandler(){
-        throw new Error('The "regValidHandler" method must be defined in to the strategy of validation')
+    getValidationHandlers(){
+        throw new Error('The "getValidationHandlers" method must be defined in to the strategy of validation')
     }
 }
 
