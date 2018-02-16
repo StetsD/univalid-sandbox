@@ -1,7 +1,6 @@
 'use strict';
 
 const UnivalidStrategy = require('./univalid-strategy');
-const {notEmpty, isObject, notZeroLength} = require('./tools/error-handler');
 
 const validHandlers = {
     'somecase': () => {
@@ -16,7 +15,14 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
 
 
     check(pack, core){
-        core.validate();
+        for(let i = 0; i < pack.length; i++){
+            if(!pack[i].name)
+                return core.emit('error', 'Can\'t find "name" field, "name" is required field')
+            if(!pack[i].type)
+                return core.emit('error', `Can't find "type" field in ${pack[i].name}, "type" is required field`);
+
+            core.validate(pack[i]);
+        }
     }
 
     getValidationHandlers(){

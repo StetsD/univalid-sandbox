@@ -13,11 +13,15 @@ const {unipack} = require('./modules/data');
 
 
 univalid.on('start:valid', uni => {
-    console.log(uni);
+    console.log('start');
 });
 univalid.on('end:valid', uni => {
-    console.log(uni);
-})
+    console.log('end');
+});
+
+univalid.on('end:valid:field', field => {
+    console.log(field);
+});
 
 
 univalid.check(unipack);

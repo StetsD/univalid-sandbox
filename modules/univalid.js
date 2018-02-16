@@ -1,13 +1,18 @@
 'use strict';
 
 const {EventEmitter} = require('events');
-const {notEmpty, isObject, notZeroLength} = require('./tools/error-handler');
-let _strategy = null;
+const { notEmpty,
+        isObject,
+        notZeroLength,
+        isArray } = require('./univalid-tools/univalid-error-handler');
+const decision = require('./univalid-tools/univalid-decision');
 
+let _strategy = null;
+var _state = [];
 let _validationHandlers = {
     'required': (val) => {
         let data = val ? ('' + val).trim() : '';
-        return data;
+        return !!data;
     },
     'email': (val) => {
 
@@ -26,6 +31,9 @@ class Univalid extends EventEmitter {
 
         this.setStrategy(strategy);
         this.setValidHandler(strategy.getValidationHandlers(), true);
+        this.on('error', msg => {
+            console.error(new Error(msg));
+        });
     }
 
     setStrategy(strategy){
@@ -38,63 +46,44 @@ class Univalid extends EventEmitter {
     }
 
     check(pack){
+        isArray(pack, 'Entry validation package must be an array type');
+
         this.emit('start:valid', this);
-        _strategy.check(pack, this);
+        pack.length && _strategy.check(pack, this);
         this.emit('end:valid', this);
         return this;
     }
 
-    validate(name, val, type){
-        let valid, status, handler = _validationHandlers[type];
+    validate(field){
+        let {name, val, type, filter, msg} = field;
+        let handler = _validationHandlers[type];
 
-        this.emit('start:valid:field', {name, val, type});
+        this.emit('start:valid:field', field);
 
         if(handler){
+            let condition = handler(val);
+            var {state, status} = decision(val, condition);
+            let msgResult = msg[state];
 
+            _state.push({name, type, state, status, msg: msgResult});
+            this.emit('end:valid:field', {name, type, state, status, msg: msgResult});
         }
-
-        // switch(type){
-        //     case 'required' || "" :
-        //     {
-        //
-        //         decision(!!data, true);
-        //     }
-        //
-        // }
-
-        // decision(val, condition){
-        //     if(val === 'keyError'){
-        //         valid = 'error';
-        //         status = condition;
-        //     }
-        //     if(val){
-        //         if(condition){
-        //             valid = 'success';
-        //             status = 'success';
-        //         }else{
-        //             valid = 'error';
-        //             status = 'invalid';
-        //         }
-        //     }else{
-        //         valid = 'error';
-        //         status = 'empty';
-        //     }
-        // }
-
-        this.emit('end:valid:field', {name, val, type, status, type});
     }
 
     setValidHandler(pack, strictMode){
         notEmpty(pack, 'Pack of validation handlers is not defined');
         isObject(pack, 'Pack of validation handlers must be an object type');
-        notZeroLength(pack, 'Pack of validation is empty');
 
-        for(let key in pack){
-            if(_validationHandlers[key] && strictMode)
-                throw new Error(`Handler of "${key}" type is already exists.If you want overwrite this handler, use 'strictMode' arg = false`);
+        if(Object.keys(pack).length !== 0){
+            for(let key in pack){
+                if(_validationHandlers[key] && strictMode)
+                    throw new Error(`Handler of "${key}" type is already exists.If you want overwrite this handler, use 'strictMode' arg = false`);
 
-            _validationHandlers[key] = pack[key];
-            this.emit('set:newValidationHandler', key, pack[key]);
+                _validationHandlers[key] = pack[key];
+                this.emit('set:newValidationHandler', key, pack[key]);
+            }
+        }else{
+            console.warn('Pack of validation is empty');
         }
     }
 
@@ -103,18 +92,11 @@ class Univalid extends EventEmitter {
     }
 
     get getState(){
-
-        return this;
+        return _state;
     }
 
     clearState(){
-
-        return this;
-    }
-
-    init(){
-
-        return this;
+        _state = [];
     }
 }
 

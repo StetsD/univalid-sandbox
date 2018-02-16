@@ -15,6 +15,13 @@ function isObject(val, msg){
     return true;
 }
 
+function isArray(val, msg){
+    if(!Array.isArray(val))
+        throw new TypeError(msg);
+
+    return true;
+}
+
 function notZeroLength(val, msg){
     if(Object.keys(val).length === 0)
         throw new Error(msg);
@@ -29,4 +36,4 @@ function isFunc(val, msg){
     return true;
 }
 
-module.exports = {notEmpty, isObject, notZeroLength};
+module.exports = {notEmpty, isObject, notZeroLength, isArray};

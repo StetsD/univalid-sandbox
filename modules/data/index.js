@@ -6,9 +6,9 @@ module.exports = {
             type: 'required',
             filter: '',
             msg: {
-                errEmpty: 'You shall not pass',
-                errValidation: 'Validation error',
-                errFilter: 'Filter error',
+                empty: 'You shall not pass',
+                invalid: 'Validation error',
+                filterErr: 'Filter error',
                 success: 'All right'
             }
         },
@@ -18,9 +18,9 @@ module.exports = {
             type: 'email',
             filter: '',
             msg: {
-                errEmpty: 'You shall not pass',
-                errValidation: 'Bad email',
-                errFilter: 'Only lat/numbers/specials symbols',
+                empty: 'You shall not pass',
+                invalid: 'Bad email',
+                filterErr: 'Only lat/numbers/specials symbols',
                 success: 'All right'
             }
         },
@@ -30,9 +30,9 @@ module.exports = {
             type: 'password',
             filter: '',
             msg: {
-                errEmpty: 'You shall not pass',
-                errValidation: 'Your pass is sucks',
-                errFilter: 'Only lat/numbers/specials symbols',
+                empty: 'You shall not pass',
+                invalid: 'Your pass is sucks',
+                filterErr: 'Only lat/numbers/specials symbols',
                 success: 'You norm'
             }
         },
@@ -42,9 +42,21 @@ module.exports = {
             type: 'equal',
             filter: '',
             msg: {
-                errEmpty: 'You shall not pass',
-                errValidation: 'Your passs not qual',
-                errFilter: 'Only lat/numbers/specials symbols',
+                empty: 'You shall not pass',
+                invalid: 'Your passs not qual',
+                filterErr: 'Only lat/numbers/specials symbols',
+                success: 'Oooooo normas'
+            }
+        },
+        {
+            name: 'wtfak',
+            val: 'wtfak and more',
+            type: 'wtfType',
+            filter: '',
+            msg: {
+                empty: 'You shall not pass',
+                invalid: 'Your passs not qual',
+                filterErr: 'Only lat/numbers/specials symbols',
                 success: 'Oooooo normas'
             }
         },
