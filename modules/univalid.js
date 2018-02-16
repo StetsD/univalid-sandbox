@@ -6,6 +6,7 @@ const { notEmpty,
         notZeroLength,
         isArray } = require('./univalid-tools/univalid-error-handler');
 const decision = require('./univalid-tools/univalid-decision');
+const MSG_CONFIG = require('./univalid-tools/univalid-msg-config');
 
 let _strategy = null;
 var _state = [];
@@ -63,7 +64,12 @@ class Univalid extends EventEmitter {
         if(handler){
             let condition = handler(val);
             var {state, status} = decision(val, condition);
-            let msgResult = msg[state];
+            let msgResult;
+
+            if(msg){
+
+            }
+            msgResult = msg[state] || MSG_CONFIG[state];
 
             _state.push({name, type, state, status, msg: msgResult});
             this.emit('end:valid:field', {name, type, state, status, msg: msgResult});

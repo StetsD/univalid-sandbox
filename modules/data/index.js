@@ -9,7 +9,7 @@ module.exports = {
                 empty: 'You shall not pass',
                 invalid: 'Validation error',
                 filterErr: 'Filter error',
-                success: 'All right'
+                // success: 'All right'
             }
         },
         {
@@ -17,12 +17,12 @@ module.exports = {
             val: 'Uriy@mazafaka.com',
             type: 'email',
             filter: '',
-            msg: {
-                empty: 'You shall not pass',
-                invalid: 'Bad email',
-                filterErr: 'Only lat/numbers/specials symbols',
-                success: 'All right'
-            }
+            // msg: {
+            //     empty: 'You shall not pass',
+            //     invalid: 'Bad email',
+            //     filterErr: 'Only lat/numbers/specials symbols',
+            //     success: 'All right'
+            // }
         },
         {
             name: 'password',
@@ -41,12 +41,12 @@ module.exports = {
             val: '987654321QqWw',
             type: 'equal',
             filter: '',
-            msg: {
-                empty: 'You shall not pass',
-                invalid: 'Your passs not qual',
-                filterErr: 'Only lat/numbers/specials symbols',
-                success: 'Oooooo normas'
-            }
+            // msg: {
+            //     empty: 'You shall not pass',
+            //     invalid: 'Your passs not qual',
+            //     filterErr: 'Only lat/numbers/specials symbols',
+            //     success: 'Oooooo normas'
+            // }
         },
         {
             name: 'wtfak',
