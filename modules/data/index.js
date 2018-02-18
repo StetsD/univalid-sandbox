@@ -4,11 +4,11 @@ module.exports = {
             name: 'username',
             val: 'Uriy',
             type: 'required',
-            filter: '',
+            filter: 'oL',
             msg: {
                 empty: 'You shall not pass',
                 invalid: 'Validation error',
-                filterErr: 'Filter error',
+                filter: 'Filter error',
                 // success: 'All right'
             }
         },
@@ -16,23 +16,23 @@ module.exports = {
             name: 'email',
             val: 'Uriy@mazafaka.com',
             type: 'email',
-            filter: '',
-            // msg: {
-            //     empty: 'You shall not pass',
-            //     invalid: 'Bad email',
-            //     filterErr: 'Only lat/numbers/specials symbols',
-            //     success: 'All right'
-            // }
+            filter: /[a-z]|\s/gi,
+            msg: {
+                empty: 'You shall not pass',
+                invalid: 'Bad email',
+                filter: 'Only lat/numbers/specials symbols',
+                success: 'All right'
+            }
         },
         {
             name: 'password',
             val: '987654321Qq#',
             type: 'password',
-            filter: '',
+        	filter: '',
             msg: {
                 empty: 'You shall not pass',
                 invalid: 'Your pass is sucks',
-                filterErr: 'Only lat/numbers/specials symbols',
+                filter: 'Only lat/numbers/specials symbols',
                 success: 'You norm'
             }
         },
@@ -44,7 +44,7 @@ module.exports = {
             msg: {
                 empty: 'You shall not pass',
                 invalid: 'Your passs not qual',
-                filterErr: 'Only lat/numbers/specials symbols',
+                filter: 'Only lat/numbers/specials symbols',
                 success: 'Oooooo normas'
             }
         },
@@ -56,7 +56,7 @@ module.exports = {
             msg: {
                 empty: 'You shall not pass',
                 invalid: 'Your passs not qual',
-                filterErr: 'Only lat/numbers/specials symbols',
+                filter: 'Only lat/numbers/specials symbols',
                 success: 'Oooooo normas'
             }
         },

@@ -32,6 +32,14 @@ class UnivalidStrategy {
         throw new Error('The "check" method must be defined in to the strategy of validation');
     }
 
+	applyFilter(filter, val){
+		if(filterHandler.innerTmp[filter]){
+			return filterHandler.applyFilter(filter, val);
+		}
+
+		return true;
+	}
+
     getValidationHandlers(){
         throw new Error('The "getValidationHandlers" method must be defined in to the strategy of validation')
     }

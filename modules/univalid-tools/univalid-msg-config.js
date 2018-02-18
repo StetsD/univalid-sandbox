@@ -1,7 +1,7 @@
 const univalidMsgConfig = {
     empty: 'This is required field',
     invalid: 'Validation error',
-    filterErr: 'Filter error',
+    filter: 'Not allowed symbols',
     success: 'Success'
 }
 

@@ -56,25 +56,31 @@ module.exports = (opt) => {
 	        let {name, val, type, filter, msg} = field;
 	        let handler = _validationHandlers[type];
 
+			this.emit('start:valid:field', field);
+
 			if(!name)
 				return this.emit('error', 'Can\'t find "name" field, "name" is required field')
 			if(!type)
 				return this.emit('error', `Can't find "type" field in ${name}, "type" is required field`);
 
-	        this.emit('start:valid:field', field);
-
 	        if(handler){
 	            let condition = handler(val);
 	            var {state, status} = decision(val, condition);
-	            let msgResult;
+	            var msgResult;
+
+				if(filter && !_strategy.applyFilter(filter, val)){
+					state = 'error';
+					status = 'filter';
+				}
 
 				msg && msg[status] ?
 					msgResult = msg[status] :
 					msgResult = MSG_CONFIG[status];
 
 	            _state.push({name, type, state, status, msg: msgResult});
-	            this.emit('end:valid:field', {name, type, state, status, msg: msgResult});
 	        }
+
+			this.emit('end:valid:field', {name, type, state, status, msg: msgResult});
 	    }
 
 	    setValidHandler(pack, strictMode){
