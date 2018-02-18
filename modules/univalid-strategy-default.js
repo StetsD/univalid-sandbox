@@ -9,7 +9,6 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
 		this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
     }
 
-
     check(pack, core){
         for(let i = 0; i < pack.length; i++){
             core.validate(pack[i]);
@@ -19,6 +18,14 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
     getValidationHandlers(){
         return this.validHandlers;
     }
+
+	set(option, val){
+		this[option] = val;
+	}
+
+	get(val){
+		console.warn('Getter of default strategy is locked');
+	}
 }
 
 module.exports = UnivalidStrategyDefault;

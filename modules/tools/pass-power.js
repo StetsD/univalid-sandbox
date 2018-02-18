@@ -14,7 +14,7 @@ const _config = {
 function passScore(val, minPassLength, analysis = ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']){
 	let power = 0,
 		result = {};
-
+		
 	result.length = (val.length < minPassLength) ? 0 : val.length;
 
     result.analysis = {};
@@ -56,7 +56,6 @@ function setScorePassword(password, analyse, length){
 }
 
 function passAccept(passScore){
-	console.log(passScore)
 	for (let key in passScore.analysis) {
 		if (!passScore.analysis[key]) {
 			return false;

@@ -21,6 +21,7 @@ univalid.on('end:valid', uni => {
 //     console.log(field);
 // });
 
+// univalid.set('passConfig', {min:6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials', 'hasCyrilic']});
 
 univalid.check(unipack);
 console.log(univalid.getState)

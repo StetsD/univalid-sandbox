@@ -35,6 +35,14 @@ class UnivalidStrategy {
     getValidationHandlers(){
         throw new Error('The "getValidationHandlers" method must be defined in to the strategy of validation')
     }
+
+	set(){
+		throw new Error('The "set" method must be defined in to the strategy of validation')
+	}
+
+	get(){
+		throw new Error('The "get" method must be defined in to the strategy of validation')
+	}
 }
 
 

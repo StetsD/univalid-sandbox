@@ -20,7 +20,7 @@ module.exports = (opt) => {
 	    constructor(
 			strategy = new UnivalidStrategyDefault({
 				passConfig: {
-					min: 7,
+					min: 6,
 					analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']
 				}
 			})
@@ -94,16 +94,39 @@ module.exports = (opt) => {
 	        }
 	    }
 
-	    get getValidHandler(){
+		set(option, val){
+			let strOpt = _strategy[option];
+
+			if(!strOpt)
+				return this.emit('error', `The option "${option}" is not defined in used strategy`);
+			if(val){
+				let valType = Array.isArray(val) ? 'array' : typeof val,
+					strOptType = Array.isArray(strOpt) ? 'array' : typeof strOpt;
+
+				if(valType !== strOptType)
+					return this.emit('error', `The value "${val}" of setter has bad type`);
+
+				_strategy.set(option, val);
+			}
+		}
+
+		get(prop){
+			if(!_strategy[prop])
+				return this.emit('error', `The property "${prop}" is not defined in used strategy`);
+
+			return _strategy.get(prop);
+		}
+
+		clearState(){
+			_state = [];
+		}
+
+		get getValidHandler(){
 	        return _validationHandlers;
 	    }
 
 	    get getState(){
 	        return _state;
-	    }
-
-	    clearState(){
-	        _state = [];
 	    }
 	}
 
