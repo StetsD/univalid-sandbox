@@ -26,7 +26,7 @@ module.exports = {
         },
         {
             name: 'password',
-            val: '987654321QqWw',
+            val: '987654321Qq#',
             type: 'password',
             filter: '',
             msg: {
@@ -38,15 +38,15 @@ module.exports = {
         },
         {
             name: 'password2',
-            val: '987654321QqWw',
+            val: '987654321Qq#',
             type: 'equal',
             filter: '',
-            // msg: {
-            //     empty: 'You shall not pass',
-            //     invalid: 'Your passs not qual',
-            //     filterErr: 'Only lat/numbers/specials symbols',
-            //     success: 'Oooooo normas'
-            // }
+            msg: {
+                empty: 'You shall not pass',
+                invalid: 'Your passs not qual',
+                filterErr: 'Only lat/numbers/specials symbols',
+                success: 'Oooooo normas'
+            }
         },
         {
             name: 'wtfak',

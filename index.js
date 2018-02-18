@@ -1,10 +1,8 @@
 'use strict';
 
 const Univalid = require('./modules/univalid');
-const UnivalidStrategyDefault = require('./modules/univalid-strategy-default');
 
-const univalidStrategyDefault = new UnivalidStrategyDefault();
-const univalid = Univalid(univalidStrategyDefault);
+const univalid = Univalid();
 
 const {unipack} = require('./modules/data');
 
@@ -19,9 +17,10 @@ univalid.on('end:valid', uni => {
     console.log('end');
 });
 
-univalid.on('end:valid:field', field => {
-    console.log(field);
-});
+// univalid.on('end:valid:field', field => {
+//     console.log(field);
+// });
 
 
 univalid.check(unipack);
+console.log(univalid.getState)
