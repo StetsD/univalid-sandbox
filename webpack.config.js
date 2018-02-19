@@ -7,6 +7,7 @@ module.exports = {
         path: path.resolve(__dirname, 'public'),
         filename: 'univalid.js'
     },
+	devtool: 'eval',
 	devServer: {
 		contentBase: path.join(__dirname, 'public')
 	}

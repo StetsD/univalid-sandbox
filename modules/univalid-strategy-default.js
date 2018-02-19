@@ -6,7 +6,9 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
     constructor(opt){
         super();
 
-		this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
+		if(opt){
+			this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
+		}
     }
 
     check(pack, core){

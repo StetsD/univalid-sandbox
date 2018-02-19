@@ -1,1 +1,76 @@
 'use strict';
+
+const UnivalidStrategy = require('./univalid-strategy');
+
+class UnivalidStrategyForm extends UnivalidStrategy {
+    constructor(opt){
+        super();
+
+		if(opt){
+			this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
+
+			this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
+
+		}
+    }
+
+    check(pack, core){
+		if(!Array.isArray(pack)){
+			this.collectFields();
+		}
+
+		for(let i = 0; i < pack.length; i++){
+			core.validate(pack[i]);
+		}
+    }
+
+	collectFields(){
+
+	}
+
+    getValidationHandlers(){
+        return this.validHandlers;
+    }
+
+	set(option, val){
+		this[option] = val;
+	}
+
+	get(val){
+		// console.warn('Getter of default strategy is locked');
+	}
+}
+
+function _checkOption(name, opt, type){
+	if(!opt){
+		console.warn(`The "${name}" option is required`);
+		return null;
+	}
+
+	if(typeof opt !== type){
+		console.warn(`The "${name}" option must has ${type} type`);
+		return null;
+	}
+
+	return opt;
+}
+
+function _checkSelector(slc, unique){
+	if(slc){
+		var nodeList = document.querySelectorAll(slc);
+
+		if(!nodeList[0]){
+			console.warn(`Can't find a "${slc}" selector`);
+			return null;
+		}
+
+		if(unique && nodeList.length > 1){
+			console.warn(`The "${slc}" selector must be unique node`);
+			return null;
+		}
+
+		return nodeList[0];
+	}
+}
+
+module.exports = UnivalidStrategyForm;
