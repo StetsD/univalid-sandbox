@@ -10,7 +10,7 @@ class UnivalidStrategyForm extends UnivalidStrategy {
 			this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
 
 			this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
-
+			this.$fields = this.$form && _collectNodes(this.$form);
 		}
     }
 
@@ -37,7 +37,7 @@ class UnivalidStrategyForm extends UnivalidStrategy {
 	}
 
 	get(val){
-		// console.warn('Getter of default strategy is locked');
+		return this[val];
 	}
 }
 
@@ -70,6 +70,13 @@ function _checkSelector(slc, unique){
 		}
 
 		return nodeList[0];
+	}
+}
+
+function _collectNodes(node){
+	if(node){
+		let nodes = node.querySelectorAll('input, select, textarea');
+		return nodes;
 	}
 }
 

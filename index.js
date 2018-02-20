@@ -28,3 +28,5 @@ univalid.on('end:valid', uni => {
 
 // univalid.check(unipack);
 // console.log(univalid.getState)
+
+console.log(univalid.get('$fields'))
