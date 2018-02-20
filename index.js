@@ -29,4 +29,10 @@ univalid.on('end:valid', uni => {
 // univalid.check(unipack);
 // console.log(univalid.getState)
 
-console.log(univalid.get('$fields'))
+let nodes = univalid.get('$fields');
+
+nodes.forEach(elem => {
+	console.log(elem.getAttribute('name'))
+})
+
+console.log()
