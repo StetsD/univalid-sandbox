@@ -11,6 +11,9 @@ class UnivalidStrategyForm extends UnivalidStrategy {
 
 			this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
 			this.$fields = this.$form && _collectNodes(this.$form);
+
+			// TODO need to delete(only for test)
+			this.testValidationForDelete();
 		}
     }
 
@@ -38,6 +41,13 @@ class UnivalidStrategyForm extends UnivalidStrategy {
 
 	get(val){
 		return this[val];
+	}
+
+
+
+	// TODO need to delete (only for test)
+	testValidationForDelete(){
+		console.log(_collectPackage(this.$fields));
 	}
 }
 
@@ -77,6 +87,49 @@ function _collectNodes(node){
 	if(node){
 		let nodes = node.querySelectorAll('input, select, textarea');
 		return nodes;
+	}
+}
+
+function _collectPackage(nodes){
+	let packageValidation = [];
+
+	if(nodes && nodes.length){
+		for(let i = 0; i < nodes.length; i++){
+			let elem = nodes[i];
+			let name = elem.getAttribute('name'),
+				type = elem.hasAttribute('data-validation') ?
+					elem.getAttribute('data-validation') === '' ?
+					 	'required' : elem.getAttribute('data-validation')
+					: undefined,
+				filter = elem.getAttribute('data-f'),
+				val = elem.value,
+				msg = elem.getAttribute('data-msg');
+
+			let item = {};
+
+			if(msg){
+				try{
+					msg = JSON.parse(msg);
+				}catch(e){
+					throw new Error(`Not valid json structure in data-msg of ${name} field`);
+				}
+			}
+
+
+			if(!name || typeof type === 'undefined')
+				break;
+
+			item = {name, type, val};
+
+			if(filter)
+				item.filter = filter;
+			if(msg)
+				item.msg = msg;
+
+			packageValidation.push(item);
+		}
+
+		return packageValidation;
 	}
 }
 

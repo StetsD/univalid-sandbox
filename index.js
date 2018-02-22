@@ -34,5 +34,3 @@ let nodes = univalid.get('$fields');
 nodes.forEach(elem => {
 	console.log(elem.getAttribute('name'))
 })
-
-console.log()

@@ -13,7 +13,10 @@
 		<form method="POST" action="/" class="js-reg-form">
 			<div class="form-group">
 				<label>Username</label>
-				<input type="text" name="username" class="form-control" data-validation data-f="oL">
+				<input type="text" name="username" class="form-control"
+					data-validation
+					data-f="oL"
+					data-msg='{"empty":"This Filed empty", "invalid": "This Field Invalid", "filter": "Latin Only", "success": "Is Ok"}'>
 			</div>
 			<div class="form-group">
 				<label>Lastname</label>
