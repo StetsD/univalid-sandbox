@@ -12,7 +12,9 @@ class UnivalidStrategyForm extends UnivalidStrategy {
 			this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
 			this.$fields = this.$form && _collectNodes(this.$form);
 
-			console.log(_collectPackage(this.$fields));
+			setTimeout(()=>{
+				console.log(_collectPackage(this.$fields))
+			}, 5000);
 		}
     }
 
@@ -108,10 +110,10 @@ function _collectPackage(nodes){
 						 	'required' : elem.getAttribute('data-validation')
 						: undefined,
 					filter = elem.getAttribute('data-f'),
-					val = elem.value,
 					msg = elem.getAttribute('data-msg');
 
-				let item = {};
+				if(typeof type === 'undefined')
+					continue;
 
 				if(msg){
 					try{
@@ -121,11 +123,10 @@ function _collectPackage(nodes){
 					}
 				}
 
-
 				if(typeof type === 'undefined')
 					continue;
 
-				item = {name, type, val};
+				let item = {name, type, val: getValue(elem, name, tagname, inputType)};
 
 				if(filter)
 					item.filter = filter;
@@ -138,6 +139,28 @@ function _collectPackage(nodes){
 		}
 
 		return packageValidation;
+	}
+
+	function getValue(elem, name, tagname, inputType){
+		var value = '';
+
+		if(tagname === 'select'){
+			return 'select';
+		}
+
+		if(inputType === 'radio'){
+			let groupRadio = document.querySelectorAll(`[name="${name}"]`);
+			for(let i = 0; i < groupRadio.length; i++){
+				if(groupRadio[i].checked){
+					return groupRadio[i].value;
+				}
+				if(i === groupRadio.length - 1){
+					return '';
+				}
+			}
+		}
+
+		return elem.value;
 	}
 }
 
