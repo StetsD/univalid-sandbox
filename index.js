@@ -3,7 +3,7 @@
 const Univalid = require('./modules/univalid');
 const UnivalidStrategyForm = require('./modules/univalid-strategy-form');
 
-const univalid = Univalid(new UnivalidStrategyForm({
+const univalid = Univalid(UnivalidStrategyForm({
 	$form: '.js-reg-form'
 }));
 
@@ -31,6 +31,6 @@ univalid.on('end:valid', uni => {
 
 let nodes = univalid.get('$fields');
 
-nodes.forEach(elem => {
-	console.log(elem.getAttribute('name'))
-})
+// nodes.forEach(elem => {
+// 	console.log(elem.getAttribute('name'))
+// })

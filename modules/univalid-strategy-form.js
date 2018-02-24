@@ -2,49 +2,6 @@
 
 const UnivalidStrategy = require('./univalid-strategy');
 
-class UnivalidStrategyForm extends UnivalidStrategy {
-    constructor(opt){
-        super();
-
-		if(opt){
-			this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
-
-			this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
-			this.$fields = this.$form && _collectNodes(this.$form);
-
-			setTimeout(()=>{
-				console.log(_collectPackage(this.$fields))
-			}, 5000);
-		}
-    }
-
-    check(pack, core){
-		if(!Array.isArray(pack)){
-			this.collectFields();
-		}
-
-		for(let i = 0; i < pack.length; i++){
-			core.validate(pack[i]);
-		}
-    }
-
-	collectFields(){
-
-	}
-
-    getValidationHandlers(){
-        return this.validHandlers;
-    }
-
-	set(option, val){
-		this[option] = val;
-	}
-
-	get(val){
-		return this[val];
-	}
-}
-
 function _checkOption(name, opt, type){
 	if(!opt){
 		console.warn(`The "${name}" option is required`);
@@ -142,10 +99,15 @@ function _collectPackage(nodes){
 	}
 
 	function getValue(elem, name, tagname, inputType){
-		var value = '';
+		if(tagname === 'SELECT'){
+			let options = elem.options,
+				selected = options[elem.selectedIndex];
 
-		if(tagname === 'select'){
-			return 'select';
+			if(options[0].disabled && selected.value === options[0].value){
+				return '';
+			}
+
+			return selected.value;
 		}
 
 		if(inputType === 'radio'){
@@ -164,4 +126,71 @@ function _collectPackage(nodes){
 	}
 }
 
-module.exports = UnivalidStrategyForm;
+module.exports = (opt) => {
+	let _controller = {
+		submit(){
+			this.$form.on('submit', e => {
+				e.preventDefault();
+				this.check(_collectNodes(this.$form));
+			})
+		},
+		blur(){
+
+		},
+		focus(){
+
+		},
+		keyup(){
+
+		},
+		keypress(){
+
+		},
+		keydown(){
+
+		}
+	};
+
+	class UnivalidStrategyForm extends UnivalidStrategy {
+	    constructor(opt){
+	        super();
+
+			if(opt){
+				this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
+
+				this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
+				this.$fields = this.$form && _collectNodes(this.$form);
+
+				this.controller();
+			}
+	    }
+
+	    check(pack, core){
+			let packageValidation = _collectPackage(pack);
+
+			for(let i = 0; i < packageValidation.length; i++){
+				core.validate(packageValidation[i]);
+			}
+	    }
+
+	    getValidationHandlers(){
+	        return this.validHandlers;
+	    }
+
+		set(option, val){
+			this[option] = val;
+		}
+
+		get(val){
+			return this[val];
+		}
+
+		controller(){
+			for(let e in _controller){
+				_controller[e].call(this);
+			}
+		}
+	}
+
+	return new UnivalidStrategyForm(opt);
+};

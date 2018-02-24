@@ -30,7 +30,7 @@ module.exports = (opt) => {
 	        this.setStrategy(strategy);
 	        this.setValidHandler(strategy.getValidationHandlers(), true);
 	        this.on('error', msg => {
-	            console.error(new Error(msg));
+	            console.warn(new Error(msg));
 	        });
 	    }
 
