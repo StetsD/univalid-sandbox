@@ -3,15 +3,29 @@
 const Univalid = require('./modules/univalid');
 const UnivalidStrategyForm = require('./modules/univalid-strategy-form');
 
-const univalid = Univalid(UnivalidStrategyForm({
-	$form: '.js-reg-form'
+const univalid = Univalid();
+univalid.setStrategy(UnivalidStrategyForm({
+	$form: '.js-reg-form',
+	core: univalid,
+
+	statusConfig: {
+		targetParent: '.form-group',
+		targetStatus: '.form__msg',
+		successStatus: true
+	},
+
+	clsConfig: {
+		error: 'error',
+		success: 'success'
+	}
 }));
 
-const {unipack} = require('./modules/data');
+// univalid.set('core', univalid);
 
+// univalid.check();
+console.log(univalid)
 
-// console.log(univalid.getValidHandler);
-
+// const {unipack} = require('./modules/data');
 
 univalid.on('start:valid', uni => {
     console.log('start', uni);
@@ -29,7 +43,7 @@ univalid.on('end:valid', uni => {
 // univalid.check(unipack);
 // console.log(univalid.getState)
 
-let nodes = univalid.get('$fields');
+// let nodes = univalid.get('$fields');
 
 // nodes.forEach(elem => {
 // 	console.log(elem.getAttribute('name'))

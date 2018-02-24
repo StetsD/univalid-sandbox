@@ -39,7 +39,6 @@ module.exports = (opt) => {
 	        isObject(strategy, 'Strategy must be an object');
 
 	        _strategy = strategy;
-
 	        return this;
 	    }
 

@@ -36,7 +36,7 @@ function _checkSelector(slc, unique){
 
 function _collectNodes(node){
 	if(node){
-		let nodes = node.querySelectorAll('input, select, textarea');
+		let nodes = [].slice.call(node.querySelectorAll('input, select, textarea'));
 		return nodes;
 	}
 }
@@ -126,13 +126,41 @@ function _collectPackage(nodes){
 	}
 }
 
+function _statusConfig(pack, formSt){
+	if(!formSt.statusConfig || !formSt.statusConfig.targetParent){
+		console.warn(new Error('Nowhere to set errors. Not determined "statusConfig" property in UnivalidStrategyForm.'));
+		return;
+	}
+
+	if(pack && pack.length){
+		let {targetParent, targetStatus, successStatus} = formSt.statusConfig,
+			{error, success} = formSt.clsConfig;
+
+		pack.forEach(elem => {
+			let input = document.querySelector(`[name="${elem.name}"]`),
+				inputParent = input.closest(targetParent),
+				inputStatus = inputParent.querySelector(targetStatus);
+
+			if(elem.state === 'error'){
+
+			}else{
+
+			}
+		});
+	}
+
+	function injectMsg(){
+
+	}
+}
+
 module.exports = (opt) => {
 	let _controller = {
 		submit(){
-			this.$form.on('submit', e => {
+			this.$form.addEventListener('submit', e => {
 				e.preventDefault();
-				this.check(_collectNodes(this.$form));
-			})
+				this.core.check(_collectNodes(this.$form));
+			}, false);
 		},
 		blur(){
 
@@ -156,12 +184,28 @@ module.exports = (opt) => {
 	        super();
 
 			if(opt){
+				if(!opt.core){
+					console.warn(new Error("Don't finded the 'core' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
+					return;
+				}
+				if(!opt.$form){
+					console.warn(new Error("Don't finded the '$form' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
+					return;
+				}
+
+				//Required props
+				this.core = opt.core || {};
+				this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
+				//Option props
+				this.statusConfig = (typeof opt.statusConfig === 'object') ? opt.statusConfig : false;
+				this.clsConfig = (typeof opt.clsConfig === 'object') ? opt.clsConfig : {error: 'error', success: 'success'};
 				this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
 
-				this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
-				this.$fields = this.$form && _collectNodes(this.$form);
 
 				this.controller();
+			}else{
+				console.warn(new Error("Don't finded the 'core' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
+				return;
 			}
 	    }
 
@@ -171,6 +215,8 @@ module.exports = (opt) => {
 			for(let i = 0; i < packageValidation.length; i++){
 				core.validate(packageValidation[i]);
 			}
+
+			_statusConfig(core.getState, this);
 	    }
 
 	    getValidationHandlers(){
