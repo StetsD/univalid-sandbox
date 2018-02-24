@@ -1,6 +1,7 @@
 'use strict';
 
 const UnivalidStrategy = require('./univalid-strategy');
+const axios = require('axios');
 
 function _checkOption(name, opt, type){
 	if(!opt){
@@ -186,6 +187,10 @@ module.exports = (opt) => {
 			this.$form.addEventListener('submit', e => {
 				e.preventDefault();
 				this.core.check(_collectNodes(this.$form));
+
+				if(this.core.getCommonState === 'success'){
+					this.send();
+				}
 			}, false);
 		},
 		blur(){
@@ -254,7 +259,40 @@ module.exports = (opt) => {
 					statusContainer.innerText = '';
 				}
 			});
+		}
 
+		send({
+			newAjaxBody = this.ajaxBody,
+			cbSendComplete = this.cbSendComplete,
+			cbSendSuccess = this.cbSendSuccess,
+			cbSendError = this.cbSendError,
+		} = {}){
+			if(newAjaxBody){
+				let type = (newAjaxBody.type === 'method') ? this.$form.getAttribute('method') : newAjaxBody.type,
+					url = (newAjaxBody.url === 'action') ? this.$form.getAttribute('action') : newAjaxBody.url,
+					// data = (newAjaxBody.data === 'serialize') ? this.$form.serialize() : newAjaxBody.data,
+					body = {type: type, url: url, data: data};
+
+				// this.$elemSubmit.prop('disabled', true);
+
+				axios[type](url)
+					.then(res => {
+						this.xhr = xhr;
+						this.textStatus = textStatus;
+						if(textStatus == 'error' && this.setServerError){this.setServerError(this.xhr, this)}
+						// this.$elemSubmit.prop('disabled', false);
+
+						cbSendSuccess && cbSendSuccess();
+					})
+					.catch(err => {
+						cbSendError && cbSendError();
+					})
+
+
+				return this;
+			}
+
+			// this.$form.submit();
 		}
 
 	    check(pack, core){

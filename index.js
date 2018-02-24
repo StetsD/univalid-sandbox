@@ -32,7 +32,7 @@ univalid.on('start:valid', uni => {
 });
 univalid.on('end:valid', uni => {
     // console.log('end', uni);
-	console.log(univalid.getState)
+	// console.log(univalid.getState)
 });
 
 // univalid.on('end:valid:field', field => {
