@@ -20,11 +20,11 @@
 			color: green;
 		}
 
-		.form-group.error .form-control{
+		.error.form-control{
 			border-color: red;
 		}
 
-		.form-group.success .form-control{
+		.success.form-control{
 			border-color: green;
 		}
 	</style>
@@ -120,7 +120,7 @@
 			</div>
 			<div class="form-group">
 				<label>Example multiple select</label>
-				<select multiple class="form-control" data-validation>
+				<select multiple name="multiple" class="form-control" data-validation>
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -131,7 +131,7 @@
 			</div>
 			<div class="form-group">
 				<div class="form-check">
-					<input class="form-check-input" name="accept" type="checkbox" value="" id="invalidCheck" data-validation>
+					<input class="form-check-input" name="accept" type="checkbox" value="true" id="invalidCheck" data-validation>
 					<label class="form-check-label" for="invalidCheck">Agree to terms and conditions</label>
 				</div>
 				<div class="form__msg"></div>

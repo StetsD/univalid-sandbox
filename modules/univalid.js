@@ -46,6 +46,7 @@ module.exports = (opt) => {
 	        isArray(pack, 'Entry validation package must be an array type');
 
 	        this.emit('start:valid', this);
+			this.clearState();
 	        pack.length && _strategy.check(pack, this);
 	        this.emit('end:valid', this);
 	        return this;
@@ -134,10 +135,10 @@ module.exports = (opt) => {
 	        return _state;
 	    }
 
-		get getLastStatus(){
+		get getCommonState(){
 			if(_state.length){
 				for(let i = 0; i < _state.length; i++){
-					if(_state[i].status === 'error')
+					if(_state[i].state === 'error')
 						return 'error';
 				}
 

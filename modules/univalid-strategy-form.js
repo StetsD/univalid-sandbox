@@ -103,6 +103,9 @@ function _collectPackage(nodes){
 			let options = elem.options,
 				selected = options[elem.selectedIndex];
 
+			if(!selected)
+				return '';
+
 			if(options[0].disabled && selected.value === options[0].value){
 				return '';
 			}
@@ -122,11 +125,18 @@ function _collectPackage(nodes){
 			}
 		}
 
+		if(inputType === 'checkbox'){
+			if(elem.checked)
+				return elem.value;
+
+			return '';
+		}
+
 		return elem.value;
 	}
 }
 
-function _statusConfig(pack, formSt){
+function _setResult(pack, formSt){
 	if(!formSt.statusConfig || !formSt.statusConfig.targetParent){
 		console.warn(new Error('Nowhere to set errors. Not determined "statusConfig" property in UnivalidStrategyForm.'));
 		return;
@@ -136,7 +146,9 @@ function _statusConfig(pack, formSt){
 
 	if(pack && pack.length){
 		let {targetParent, targetStatus, successStatus} = formSt.statusConfig,
-			{error, success} = formSt.clsConfig;
+			lastStatus = formSt.core.getCommonState;
+
+		formSt.$form.classList.add(formSt.clsConfig[lastStatus]);
 
 		pack.forEach(elem => {
 			let input = document.querySelector(`[name="${elem.name}"]`),
@@ -144,7 +156,7 @@ function _statusConfig(pack, formSt){
 				inputStatus = inputParent.querySelector(targetStatus);
 
 			if(elem.state === 'error'){
-				injectMsg(inputStatus, inputParent, elem);
+				injectMsg(input, inputStatus, inputParent, elem);
 			}else{
 				successStatus && injectMsg(inputStatus, inputParent, elem);
 			}
@@ -156,14 +168,15 @@ function _statusConfig(pack, formSt){
 
 
 
-	function injectMsg(input, parent, elem){
-		if(input){
-			input.innerText = elem.msg;
+	function injectMsg(input, statusCont, parent, elem){
+		if(statusCont){
+			statusCont.innerText = elem.msg;
 		}else{
 			notInputStatus++;
 		}
 
 		parent.classList.add(formSt.clsConfig[elem.state]);
+		input.classList.add(formSt.clsConfig[elem.state]);
 	}
 }
 
@@ -222,53 +235,38 @@ module.exports = (opt) => {
 			}
 	    }
 
-		clearStatuses(inputs){
-			if(!inputs){
-				this.$blockForm[0].reset();
-			}else{
-				if(inputs.length > 1){
-					$(inputs).each(function(){
-						let $elem = $(this),
-							length = $(this).length;
+		clearStatuses(pack){
+			this.$form.classList.remove(`${this.clsConfig.error}`, `${this.clsConfig.success}`);
 
-						if(length === 1){
-							caseInput($elem);
-						}else if(length > 1){
-							$elem.each(function(){
-								caseInput($(this));
-							});
-						}else if(length === 0){
-							return true;
-						}
-					});
-				}else{
-					$(inputs).val('');
-				}
+			if(!this.statusConfig || !this.statusConfig.targetParent){
+				console.warn(new Error('Nowhere to set errors. Not determined "statusConfig" property in UnivalidStrategyForm.'));
+				return;
 			}
 
-			//Apply case input
-			function caseInput(elem){
-				let tag = elem[0].tagName,
-					type = elem.attr('type');
+			pack.forEach(elem => {
+				let parent = elem.closest(this.statusConfig.targetParent),
+					statusContainer = parent.querySelector(this.statusConfig.targetStatus);
 
-				if(tag == 'INPUT' && type !== 'radio' && type !== 'checkbox'){
-					elem.val('');
-				}else if(type == 'radio' || type == 'checkbox'){
-					elem.prop('checked', false);
-				}else if(tag == 'SELECT'){
-					elem.find('option:eq(0)').prop('selected', true);
+				parent.classList.remove(this.clsConfig.error, this.clsConfig.success);
+				elem.classList.remove(this.clsConfig.error, this.clsConfig.success);
+
+				if(statusContainer){
+					statusContainer.innerText = '';
 				}
-			}
+			});
+
 		}
 
 	    check(pack, core){
 			let packageValidation = _collectPackage(pack);
+			let localState = 0;
 
 			for(let i = 0; i < packageValidation.length; i++){
 				core.validate(packageValidation[i]);
 			}
 
-			_statusConfig(core.getState, this);
+			this.clearStatuses(pack);
+			_setResult(core.getState, this);
 	    }
 
 	    getValidationHandlers(){

@@ -11,7 +11,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 	statusConfig: {
 		targetParent: '.form-group',
 		targetStatus: '.form__msg',
-		successStatus: true
+		// successStatus: true
 	},
 
 	clsConfig: {
@@ -31,7 +31,8 @@ univalid.on('start:valid', uni => {
     console.log('start', uni);
 });
 univalid.on('end:valid', uni => {
-    console.log('end', uni);
+    // console.log('end', uni);
+	console.log(univalid.getState)
 });
 
 // univalid.on('end:valid:field', field => {
