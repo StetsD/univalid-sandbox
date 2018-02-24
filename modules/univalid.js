@@ -133,6 +133,17 @@ module.exports = (opt) => {
 	    get getState(){
 	        return _state;
 	    }
+
+		get getLastStatus(){
+			if(_state.length){
+				for(let i = 0; i < _state.length; i++){
+					if(_state[i].status === 'error')
+						return 'error';
+				}
+
+				return 'success';
+			}
+		}
 	}
 
     return new Univalid(opt);

@@ -132,6 +132,8 @@ function _statusConfig(pack, formSt){
 		return;
 	}
 
+	var notInputStatus = 0;
+
 	if(pack && pack.length){
 		let {targetParent, targetStatus, successStatus} = formSt.statusConfig,
 			{error, success} = formSt.clsConfig;
@@ -142,15 +144,26 @@ function _statusConfig(pack, formSt){
 				inputStatus = inputParent.querySelector(targetStatus);
 
 			if(elem.state === 'error'){
-
+				injectMsg(inputStatus, inputParent, elem);
 			}else{
-
+				successStatus && injectMsg(inputStatus, inputParent, elem);
 			}
 		});
+
+		if(notInputStatus)
+			console.warn(`Not find "${targetStatus}" selector in one of more ${targetParent}`);
 	}
 
-	function injectMsg(){
 
+
+	function injectMsg(input, parent, elem){
+		if(input){
+			input.innerText = elem.msg;
+		}else{
+			notInputStatus++;
+		}
+
+		parent.classList.add(formSt.clsConfig[elem.state]);
 	}
 }
 
@@ -208,6 +221,45 @@ module.exports = (opt) => {
 				return;
 			}
 	    }
+
+		clearStatuses(inputs){
+			if(!inputs){
+				this.$blockForm[0].reset();
+			}else{
+				if(inputs.length > 1){
+					$(inputs).each(function(){
+						let $elem = $(this),
+							length = $(this).length;
+
+						if(length === 1){
+							caseInput($elem);
+						}else if(length > 1){
+							$elem.each(function(){
+								caseInput($(this));
+							});
+						}else if(length === 0){
+							return true;
+						}
+					});
+				}else{
+					$(inputs).val('');
+				}
+			}
+
+			//Apply case input
+			function caseInput(elem){
+				let tag = elem[0].tagName,
+					type = elem.attr('type');
+
+				if(tag == 'INPUT' && type !== 'radio' && type !== 'checkbox'){
+					elem.val('');
+				}else if(type == 'radio' || type == 'checkbox'){
+					elem.prop('checked', false);
+				}else if(tag == 'SELECT'){
+					elem.find('option:eq(0)').prop('selected', true);
+				}
+			}
+		}
 
 	    check(pack, core){
 			let packageValidation = _collectPackage(pack);
