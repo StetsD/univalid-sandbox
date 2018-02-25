@@ -329,7 +329,13 @@ module.exports = (opt) => {
 				}else if(type == 'radio' || type == 'checkbox'){
 					elem['checked'] = false;
 				}else if(tag == 'SELECT'){
-					elem.options[0]['selected'] = true;
+					if(!elem.multiple){
+						elem.options[0]['selected'] = true;
+					}else{
+						for(let i = 0; i < elem.options.length; i++){
+							elem.options[i]['selected'] = false;
+						}
+					}
 				}
 			}
 		}

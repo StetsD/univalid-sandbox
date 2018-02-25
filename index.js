@@ -56,5 +56,5 @@ univalid.on('end:valid', uni => {
 // })
 
 setTimeout(()=>{
-	univalid.get('clearInputs', document.querySelectorAll('select'));
+	univalid.get('clearInputs');
 }, 4000);
