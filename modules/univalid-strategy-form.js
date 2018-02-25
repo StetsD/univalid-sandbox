@@ -393,6 +393,19 @@ module.exports = (opt) => {
 			}
 		}
 
+		addEvent(events){
+			if(events){
+				for(var e in events){
+					if(_controller[e]){
+						console.warn(new Error('This event name is already exist'));
+					}else{
+						_controller[e] = events[e];
+						this.controller(e);
+					}
+				}
+			}
+		}
+
 		disable(){
 			_collectNodes(this.$form)
 				.forEach(elem => {
@@ -419,10 +432,15 @@ module.exports = (opt) => {
 			return this[val];
 		}
 
-		controller(){
-			for(let e in _controller){
-				_controller[e].call(this);
+		controller(event){
+			if(event){
+				_controller[event].call(this);
+			}else{
+				for(let e in _controller){
+					_controller[e].call(this);
+				}
 			}
+
 		}
 	}
 

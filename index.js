@@ -40,6 +40,10 @@ univalid.setStrategy(UnivalidStrategyForm({
 	}
 }));
 
+univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
+	console.log('Check new maza event');
+})}})
+
 // univalid.set('core', univalid);
 
 // univalid.check();
