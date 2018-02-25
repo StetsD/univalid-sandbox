@@ -2,6 +2,7 @@
 
 const UnivalidStrategy = require('./univalid-strategy');
 const axios = require('axios');
+const serialize = require('form-serialize');
 
 function _checkOption(name, opt, type){
 	if(!opt){
@@ -231,7 +232,7 @@ module.exports = (opt) => {
 				this.statusConfig = (typeof opt.statusConfig === 'object') ? opt.statusConfig : false;
 				this.clsConfig = (typeof opt.clsConfig === 'object') ? opt.clsConfig : {error: 'error', success: 'success'};
 				this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
-
+				this.sendConfig = opt.sendConfig;
 
 				this.controller();
 			}else{
@@ -262,7 +263,7 @@ module.exports = (opt) => {
 		}
 
 		send({
-			newAjaxBody = this.ajaxBody,
+			newAjaxBody = this.sendConfig,
 			cbSendComplete = this.cbSendComplete,
 			cbSendSuccess = this.cbSendSuccess,
 			cbSendError = this.cbSendError,
@@ -270,29 +271,29 @@ module.exports = (opt) => {
 			if(newAjaxBody){
 				let type = (newAjaxBody.type === 'method') ? this.$form.getAttribute('method') : newAjaxBody.type,
 					url = (newAjaxBody.url === 'action') ? this.$form.getAttribute('action') : newAjaxBody.url,
-					// data = (newAjaxBody.data === 'serialize') ? this.$form.serialize() : newAjaxBody.data,
-					body = {type: type, url: url, data: data};
+					data = (!newAjaxBody.data) ? serialize(this.$form, {hash: true}) : newAjaxBody.data,
+					notDisableSubmit = newAjaxBody.notDisableSubmit;
+				let $submit = this.$form.querySelector('[type="submit"]');
 
-				// this.$elemSubmit.prop('disabled', true);
+				$submit && !notDisableSubmit ? $submit['disabled'] = true : null;
 
-				axios[type](url)
+				if(!type){
+					return console.warn(new Error('Http Method is not defined. Define it in attributes "send" method or html attribute of form "method"'));
+				}
+				if(!url){
+					return console.warn(new Error('Url to send is not defined. Define it in attributes "send" method or html attribute of form "action"'));
+				}
+
+				axios[type.toLowerCase()](url, data)
 					.then(res => {
-						this.xhr = xhr;
-						this.textStatus = textStatus;
-						if(textStatus == 'error' && this.setServerError){this.setServerError(this.xhr, this)}
-						// this.$elemSubmit.prop('disabled', false);
-
-						cbSendSuccess && cbSendSuccess();
+						$submit && !notDisableSubmit ? $submit['disabled'] = false : null;
+						cbSendSuccess && cbSendSuccess(res, this);
 					})
 					.catch(err => {
-						cbSendError && cbSendError();
+						$submit && !notDisableSubmit ? $submit['disabled'] = false : null;
+						cbSendError && cbSendError(res, this);
 					})
-
-
-				return this;
 			}
-
-			// this.$form.submit();
 		}
 
 	    check(pack, core){

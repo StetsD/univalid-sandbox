@@ -17,6 +17,12 @@ univalid.setStrategy(UnivalidStrategyForm({
 	clsConfig: {
 		error: 'error',
 		success: 'success'
+	},
+
+	sendConfig: {
+		type: 'POST',
+		url: '/',
+		// notDisableSubmit: true
 	}
 }));
 
