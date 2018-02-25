@@ -23,7 +23,9 @@ univalid.setStrategy(UnivalidStrategyForm({
 		type: 'POST',
 		url: '/',
 		// notDisableSubmit: true
-	}
+	},
+
+	keyLogger: true
 }));
 
 // univalid.set('core', univalid);
@@ -55,6 +57,7 @@ univalid.on('end:valid', uni => {
 // 	console.log(elem.getAttribute('name'))
 // })
 
+
 setTimeout(()=>{
-	univalid.get('clearInputs');
-}, 4000);
+	univalid.get('send');
+}, 1000);

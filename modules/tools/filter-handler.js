@@ -86,18 +86,23 @@ class FilterHandler {
 
 		return _parseReg(val, filters);
 	}
+
+	logXss(string){
+		if(string.match(this.config.filters.oS)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }
 
 let _parseReg = function(string, regs){
-	let decision = true;
-
-	regs.forEach(reg => {
-        if(reg.test(string)){
-            decision = false;
-        }
-	});
-
-    return decision;
+	for(let i = 0; i < regs.length; i++){
+		if(string.match(regs[i])){
+			return false;
+		}
+	}
+	return true;
 };
 
 // class filterHandler {
@@ -119,13 +124,7 @@ let _parseReg = function(string, regs){
 //
 // 	}
 //
-// 	logXss(string, elem = 'default'){
-// 		if(string.match(this.config.inputTemplate.oS)){
-// 			return true;
-// 		}else{
-// 			return false;
-// 		}
-// 	}
+
 // }
 
 module.exports = () => {

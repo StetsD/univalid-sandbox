@@ -1,6 +1,7 @@
 'use strict';
 
 const UnivalidStrategy = require('./univalid-strategy');
+const keyLogger = require('./tools/filter-handler')();
 const axios = require('axios');
 const serialize = require('form-serialize');
 
@@ -36,11 +37,16 @@ function _checkSelector(slc, unique){
 	}
 }
 
-function _collectNodes(node){
+function _collectNodes(form, node){
+	let nodes = [];
+
 	if(node){
-		let nodes = [].slice.call(node.querySelectorAll('input, select, textarea'));
-		return nodes;
+		nodes.push(node);
+	}else{
+		nodes = [].slice.call(form.querySelectorAll('input, select, textarea'));
 	}
+
+	return nodes;
 }
 
 function _collectPackage(nodes){
@@ -81,9 +87,6 @@ function _collectPackage(nodes){
 						throw new Error(`Not valid json structure in data-msg of ${name} field`);
 					}
 				}
-
-				if(typeof type === 'undefined')
-					continue;
 
 				let item = {name, type, val: getValue(elem, name, tagname, inputType)};
 
@@ -195,10 +198,38 @@ module.exports = (opt) => {
 			}, false);
 		},
 		blur(){
+			if(this.keyLogger){
+				let inputs = _collectNodes(this.$form);
 
+				inputs.forEach(input => {
+					input.addEventListener('blur', e => {
+						var elem = e.target,
+							val = elem.value,
+							tag = elem.tagName,
+							type = elem.type,
+							validType = elem.getAttribute('data-f');
+
+						if(val && tag === 'INPUT' && type === 'text'){
+							if(keyLogger.logXss(val)){
+								this.clearInputs(elem);
+							}
+							if(validType){
+								if(!keyLogger.applyFilter(validType, val)){
+									this.core.check(_collectNodes(this.$form, elem));
+								}
+							}
+						}
+					});
+				});
+			}
 		},
 		focus(){
-
+			_collectNodes(this.$form)
+				.forEach(elem => {
+					elem.addEventListener('focus', e => {
+						this.clearStatuses([e.target]);
+					}, false);
+				});
 		},
 		keyup(){
 
@@ -233,6 +264,7 @@ module.exports = (opt) => {
 				this.clsConfig = (typeof opt.clsConfig === 'object') ? opt.clsConfig : {error: 'error', success: 'success'};
 				this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
 				this.sendConfig = opt.sendConfig;
+				this.keyLogger = (typeof opt.keyLogger === 'boolean') ? opt.keyLogger : false;
 
 				this.controller();
 			}else{
@@ -298,7 +330,6 @@ module.exports = (opt) => {
 
 	    check(pack, core){
 			let packageValidation = _collectPackage(pack);
-			let localState = 0;
 
 			for(let i = 0; i < packageValidation.length; i++){
 				core.validate(packageValidation[i]);
@@ -338,6 +369,20 @@ module.exports = (opt) => {
 					}
 				}
 			}
+		}
+
+		disable(){
+			_collectNodes(this.$form)
+				.forEach(elem => {
+					elem.disabled = true;
+				});
+		}
+
+		enable(){
+			_collectNodes(this.$form)
+				.forEach(elem => {
+					elem.disabled = false;
+				});
 		}
 
 	    getValidationHandlers(){
