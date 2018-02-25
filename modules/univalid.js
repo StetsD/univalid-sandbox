@@ -116,9 +116,13 @@ module.exports = (opt) => {
 			}
 		}
 
-		get(prop){
+		get(prop, ...args){
 			if(!_strategy[prop])
 				return this.emit('error', `The property "${prop}" is not defined in used strategy`);
+
+			if(typeof _strategy[prop] === 'function'){
+				return _strategy.get(prop).apply(_strategy, args);
+			}
 
 			return _strategy.get(prop);
 		}

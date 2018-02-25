@@ -308,6 +308,32 @@ module.exports = (opt) => {
 			_setResult(core.getState, this);
 	    }
 
+		clearInputs(inputs){
+			if(!inputs){
+				this.$form.reset();
+			}else{
+				if(inputs.length > 1){
+					inputs.forEach(elem => caseInput(elem));
+				}else{
+					caseInput(inputs);
+				}
+			}
+
+			function caseInput(elem){
+				elem = elem.length && elem.tagName !== 'SELECT' ? elem[0] : elem;
+				let tag = elem.tagName,
+					type = elem.getAttribute('type');
+
+				if(tag == 'INPUT' && type !== 'radio' && type !== 'checkbox'){
+					elem.value = '';
+				}else if(type == 'radio' || type == 'checkbox'){
+					elem['checked'] = false;
+				}else if(tag == 'SELECT'){
+					elem.options[0]['selected'] = true;
+				}
+			}
+		}
+
 	    getValidationHandlers(){
 	        return this.validHandlers;
 	    }

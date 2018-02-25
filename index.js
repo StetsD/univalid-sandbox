@@ -29,7 +29,6 @@ univalid.setStrategy(UnivalidStrategyForm({
 // univalid.set('core', univalid);
 
 // univalid.check();
-console.log(univalid)
 
 // const {unipack} = require('./modules/data');
 
@@ -55,3 +54,7 @@ univalid.on('end:valid', uni => {
 // nodes.forEach(elem => {
 // 	console.log(elem.getAttribute('name'))
 // })
+
+setTimeout(()=>{
+	univalid.get('clearInputs', document.querySelectorAll('select'));
+}, 4000);
