@@ -17,21 +17,13 @@ module.exports = (opt) => {
 	let _validationHandlers = {};
 
 	class Univalid extends EventEmitter {
-	    constructor(
-			strategy = new UnivalidStrategyDefault({
-				passConfig: {
-					min: 6,
-					analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']
-				}
-			})
-		){
+	    constructor(){
 	        super();
 
-	        this.setStrategy(strategy);
-	        this.setValidHandler(strategy.getValidationHandlers(), true);
 	        this.on('error', msg => {
-	            console.error(new Error(msg));
+	            console.warn(new Error(msg));
 	        });
+			return this;
 	    }
 
 	    setStrategy(strategy){
@@ -39,7 +31,7 @@ module.exports = (opt) => {
 	        isObject(strategy, 'Strategy must be an object');
 
 	        _strategy = strategy;
-
+			this.setValidHandler(strategy.getValidationHandlers(), true);
 	        return this;
 	    }
 
@@ -47,6 +39,7 @@ module.exports = (opt) => {
 	        isArray(pack, 'Entry validation package must be an array type');
 
 	        this.emit('start:valid', this);
+			this.clearState();
 	        pack.length && _strategy.check(pack, this);
 	        this.emit('end:valid', this);
 	        return this;
@@ -116,9 +109,13 @@ module.exports = (opt) => {
 			}
 		}
 
-		get(prop){
+		get(prop, ...args){
 			if(!_strategy[prop])
 				return this.emit('error', `The property "${prop}" is not defined in used strategy`);
+
+			if(typeof _strategy[prop] === 'function'){
+				return _strategy.get(prop).apply(_strategy, args);
+			}
 
 			return _strategy.get(prop);
 		}
@@ -134,6 +131,17 @@ module.exports = (opt) => {
 	    get getState(){
 	        return _state;
 	    }
+
+		get getCommonState(){
+			if(_state.length){
+				for(let i = 0; i < _state.length; i++){
+					if(_state[i].state === 'error')
+						return 'error';
+				}
+
+				return 'success';
+			}
+		}
 	}
 
     return new Univalid(opt);

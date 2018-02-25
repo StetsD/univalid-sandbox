@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<style>
+		.form-group .form__msg{
+			display: none;
+		}
+
+		.form-group.error .form__msg{
+			display: block;
+			color: red;
+		}
+
+		.form-group.success .form__msg{
+			display: block;
+			color: green;
+		}
+
+		.error.form-control{
+			border-color: red;
+		}
+
+		.success.form-control{
+			border-color: green;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<br><br><br>
+		<form  class="js-reg-form">
+			<div class="form-group">
+				<label>Username</label>
+				<input type="text" name="username" class="form-control"
+					data-validation
+					data-f="oL"
+					data-msg='{"empty":"This Filed empty", "invalid": "This Field Invalid", "filter": "Latin Only", "success": "Is Ok"}'>
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-group">
+				<label>Lastname</label>
+				<input type="text" name="lastname" class="form-control" data-validation data-f="oC">
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-group">
+				<label>Email address</label>
+				<input type="text" name="email" class="form-control" placeholder="name@example.com" data-validation="email" data-f>
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-group">
+				<label>Select your bDay</label>
+				<div class="form-row">
+					<select class="form-control col" name="bday[day]" data-validation data-f="oN">
+	                  <option disabled selected>Выберите</option>
+	                  <option>01</option>
+	                  <option>02</option>
+	                  <option>03</option>
+	                  <option>04</option>
+	                </select>
+					<select class="form-control col" name="bday[mouth]" data-validation data-f>
+	                  <option disabled selected>Выберите</option>
+	                  <option>01</option>
+	                  <option>02</option>
+	                  <option>03</option>
+	                  <option>04</option>
+	                </select>
+					<select class="form-control col" name="bday[year]" data-validation>
+	                  <option disabled selected>Выберите</option>
+	                  <option>1970</option>
+	                  <option>1980</option>
+	                  <option>1990</option>
+	                  <option>2000</option>
+	                </select>
+				</div>
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-group">
+				<br>
+				<label>Select your country</label><br>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="country" id="inlineRadio1" value="Russia Federation" data-f data-validation>
+					<label class="form-check-label" for="inlineRadio1">Russia Federation</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="country" id="inlineRadio2" value="Ukraine" data-validation>
+					<label class="form-check-label" for="inlineRadio2">Ukraine</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="country" id="inlineRadio3" value="Belarus" data-f="oN" data-validation>
+					<label class="form-check-label" for="inlineRadio3">Belarus</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="country" id="inlineRadio4" value="Kazakhstan" data-validation>
+					<label class="form-check-label" for="inlineRadio4">Kazakhstan</label>
+				</div>
+				<br>
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-group">
+				<label>Phone Number</label>
+				<input type="text" name="phone" class="form-control" data-validation data-f="oN">
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col">
+					<label>Password</label>
+					<input type="password" name="password" class="form-control" data-validation="password">
+					<div class="form__msg"></div>
+				</div>
+				<div class="form-group col">
+					<label>Repeat Password</label>
+					<input type="password" name="password2" class="form-control" data-validation="equal">
+					<div class="form__msg"></div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Example multiple select</label>
+				<select multiple name="multiple" class="form-control" data-validation>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+				<div class="form__msg"></div>
+			</div>
+			<div class="form-group">
+				<div class="form-check">
+					<input class="form-check-input" name="accept" type="checkbox" value="true" id="invalidCheck" data-validation>
+					<label class="form-check-label" for="invalidCheck">Agree to terms and conditions</label>
+				</div>
+				<div class="form__msg"></div>
+			</div>
+
+			<button type="submit" class="btn">Submit</button>
+		</form>
+	</div>
+
+</body>
+
+<script src="univalid.js"></script>
+
+</html>

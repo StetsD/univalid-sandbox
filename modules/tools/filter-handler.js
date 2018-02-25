@@ -86,47 +86,36 @@ class FilterHandler {
 
 		return _parseReg(val, filters);
 	}
+
+	logXss(string){
+		if(string.match(this.config.filters.oS)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	onFilter(e, elem = 'default') {
+		let keyCode = e.keyCode,
+			symbol = e.key || String.fromCharCode(keyCode);
+
+		if(symbol in this.specials) return;
+		if(!symbol.match(this.config.filters[elem])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 let _parseReg = function(string, regs){
-	let decision = true;
-
-	regs.forEach(reg => {
-        if(reg.test(string)){
-            decision = false;
-        }
-	});
-
-    return decision;
+	for(let i = 0; i < regs.length; i++){
+		if(string.match(regs[i])){
+			return false;
+		}
+	}
+	return true;
 };
-
-// class filterHandler {
-//
-//
-// 	onFilter(e, elem = 'default') {
-// 		let keyCode = e.keyCode,
-// 			symbol = e.key || String.fromCharCode(keyCode);
-//
-// 		if(symbol in this.specials) return;
-// 		if(!symbol.match(this.config.inputTemplate[elem])) {
-// 			return true;
-// 		} else {
-// 			return false;
-// 		}
-// 	}
-//
-// 	filterBlur(string, elem = 'default'){
-//
-// 	}
-//
-// 	logXss(string, elem = 'default'){
-// 		if(string.match(this.config.inputTemplate.oS)){
-// 			return true;
-// 		}else{
-// 			return false;
-// 		}
-// 	}
-// }
 
 module.exports = () => {
 	return new FilterHandler();
