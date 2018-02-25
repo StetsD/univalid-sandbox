@@ -32,6 +32,11 @@ univalid.setStrategy(UnivalidStrategyForm({
 		cb: val => {
 			console.log(val);
 		}
+	},
+
+	passConfig: {
+		min: 10,
+		analysis: ['hasUppercase']
 	}
 }));
 

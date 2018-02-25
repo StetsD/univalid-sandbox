@@ -253,9 +253,12 @@ module.exports = (opt) => {
 			}
 
 			if(this.checkPassScore){
-				this.$form.querySelector(this.checkPassScore.target).addEventListener('keyup', e => {
-					this.checkPassScore.cb(passScore(e.target.value, this.passConfig.min, this.passConfig.analysis).power);
-				});
+				if(this.checkPassScore.target){
+					this.$form.querySelector(this.checkPassScore.target).addEventListener('keyup', e => {
+						this.checkPassScore.cb && this.checkPassScore.cb(passScore(e.target.value, this.passConfig.min, this.passConfig.analysis).power);
+					});
+				}
+
 			}
 		}
 	};

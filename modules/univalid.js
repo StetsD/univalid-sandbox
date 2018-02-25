@@ -17,21 +17,13 @@ module.exports = (opt) => {
 	let _validationHandlers = {};
 
 	class Univalid extends EventEmitter {
-	    constructor(
-			strategy = new UnivalidStrategyDefault({
-				passConfig: {
-					min: 6,
-					analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']
-				}
-			})
-		){
+	    constructor(){
 	        super();
 
-	        this.setStrategy(strategy);
-	        this.setValidHandler(strategy.getValidationHandlers(), true);
 	        this.on('error', msg => {
 	            console.warn(new Error(msg));
 	        });
+			return this;
 	    }
 
 	    setStrategy(strategy){
@@ -39,6 +31,7 @@ module.exports = (opt) => {
 	        isObject(strategy, 'Strategy must be an object');
 
 	        _strategy = strategy;
+			this.setValidHandler(strategy.getValidationHandlers(), true);
 	        return this;
 	    }
 
