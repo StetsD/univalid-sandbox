@@ -2,6 +2,7 @@
 
 const UnivalidStrategy = require('./univalid-strategy');
 const keyLogger = require('./tools/filter-handler')();
+const {passScore} = require('./tools/pass-power');
 const axios = require('axios');
 const serialize = require('form-serialize');
 
@@ -232,13 +233,30 @@ module.exports = (opt) => {
 				});
 		},
 		keyup(){
+			if(this.keyLogger){
+				let inputs = _collectNodes(this.$form);
 
-		},
-		keypress(){
+				inputs.forEach(input => {
+					input.addEventListener('keyup', e => {
+						let elem = e.target,
+							val = elem.value,
+							validType = elem.getAttribute('data-f');
 
-		},
-		keydown(){
+						if(!keyLogger.applyFilter(validType, val)){
+							this.core.check(_collectNodes(this.$form, elem));
+							return false;
+						}else{
+							this.clearStatuses([e.target]);
+						}
+					});
+				});
+			}
 
+			if(this.checkPassScore){
+				this.$form.querySelector(this.checkPassScore.target).addEventListener('keyup', e => {
+					this.checkPassScore.cb(passScore(e.target.value, this.passConfig.min, this.passConfig.analysis).power);
+				});
+			}
 		}
 	};
 
@@ -265,6 +283,7 @@ module.exports = (opt) => {
 				this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
 				this.sendConfig = opt.sendConfig;
 				this.keyLogger = (typeof opt.keyLogger === 'boolean') ? opt.keyLogger : false;
+				this.checkPassScore = (typeof opt.checkPassScore === 'object') ? opt.checkPassScore : false;
 
 				this.controller();
 			}else{

@@ -25,7 +25,14 @@ univalid.setStrategy(UnivalidStrategyForm({
 		// notDisableSubmit: true
 	},
 
-	keyLogger: true
+	keyLogger: true,
+
+	checkPassScore: {
+		target: 'input[type="password"]',
+		cb: val => {
+			console.log(val);
+		}
+	}
 }));
 
 // univalid.set('core', univalid);

@@ -94,6 +94,18 @@ class FilterHandler {
 			return false;
 		}
 	}
+
+	onFilter(e, elem = 'default') {
+		let keyCode = e.keyCode,
+			symbol = e.key || String.fromCharCode(keyCode);
+
+		if(symbol in this.specials) return;
+		if(!symbol.match(this.config.filters[elem])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 let _parseReg = function(string, regs){
@@ -104,28 +116,6 @@ let _parseReg = function(string, regs){
 	}
 	return true;
 };
-
-// class filterHandler {
-//
-//
-// 	onFilter(e, elem = 'default') {
-// 		let keyCode = e.keyCode,
-// 			symbol = e.key || String.fromCharCode(keyCode);
-//
-// 		if(symbol in this.specials) return;
-// 		if(!symbol.match(this.config.inputTemplate[elem])) {
-// 			return true;
-// 		} else {
-// 			return false;
-// 		}
-// 	}
-//
-// 	filterBlur(string, elem = 'default'){
-//
-// 	}
-//
-
-// }
 
 module.exports = () => {
 	return new FilterHandler();
