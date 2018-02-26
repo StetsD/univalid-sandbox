@@ -9,7 +9,7 @@ module.exports = {
                 empty: 'You shall not pass',
                 invalid: 'Validation error',
                 filter: 'Filter error',
-                // success: 'All right'
+                success: 'All right'
             }
         },
         {

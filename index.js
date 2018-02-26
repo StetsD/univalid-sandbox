@@ -46,17 +46,22 @@ univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 
 // univalid.set('core', univalid);
 
-// univalid.check();
 
 // const {unipack} = require('./modules/data');
+// const univalid2 = Univalid();
+// univalid2.check(unipack)
+// console.log(univalid2.getState);
+// univalid2.on('end:valid:field', field => {
+//     console.log(field);
+// });
 
-univalid.on('start:valid', uni => {
-    console.log('start', uni);
-});
-univalid.on('end:valid', uni => {
-    // console.log('end', uni);
-	// console.log(univalid.getState)
-});
+// univalid.on('start:valid', uni => {
+//     console.log('start', uni);
+// });
+// univalid.on('end:valid', uni => {
+//     console.log('end', uni);
+// 	console.log(univalid.getState)
+// });
 
 // univalid.on('end:valid:field', field => {
 //     console.log(field);

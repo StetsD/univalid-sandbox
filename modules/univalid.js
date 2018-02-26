@@ -11,7 +11,7 @@ const decision = require('./univalid-tools/univalid-decision');
 const MSG_CONFIG = require('./univalid-tools/univalid-msg-config')();
 
 
-module.exports = (opt) => {
+module.exports = () => {
 	let _strategy = null;
 	var _state = [];
 	let _validationHandlers = {};
@@ -23,6 +23,8 @@ module.exports = (opt) => {
 	        this.on('error', msg => {
 	            console.warn(new Error(msg));
 	        });
+
+			this.setStrategy(new UnivalidStrategyDefault());
 			return this;
 	    }
 
@@ -31,7 +33,7 @@ module.exports = (opt) => {
 	        isObject(strategy, 'Strategy must be an object');
 
 	        _strategy = strategy;
-			this.setValidHandler(strategy.getValidationHandlers(), true);
+			this.setValidHandler(strategy.getValidationHandlers());
 	        return this;
 	    }
 
@@ -76,20 +78,17 @@ module.exports = (opt) => {
 			this.emit('end:valid:field', {name, type, state, status, msg: msgResult});
 	    }
 
-	    setValidHandler(pack, strictMode){
+	    setValidHandler(pack){
 	        notEmpty(pack, 'Pack of validation handlers is not defined');
 	        isObject(pack, 'Pack of validation handlers must be an object type');
 
 	        if(Object.keys(pack).length !== 0){
 	            for(let key in pack){
-	                if(_validationHandlers[key] && strictMode)
-	                    throw new Error(`Handler of "${key}" type is already exists.If you want overwrite this handler, use 'strictMode' arg = false`);
-
 	                _validationHandlers[key] = pack[key];
 	                this.emit('set:newValidationHandler', key, pack[key]);
 	            }
 	        }else{
-	            console.warn('Pack of validation is empty');
+	            this.emit('error', 'Pack of validation is empty');
 	        }
 	    }
 
@@ -132,6 +131,10 @@ module.exports = (opt) => {
 	        return _state;
 	    }
 
+		get getStrategy(){
+			return _strategy;
+		}
+
 		get getCommonState(){
 			if(_state.length){
 				for(let i = 0; i < _state.length; i++){
@@ -144,5 +147,5 @@ module.exports = (opt) => {
 		}
 	}
 
-    return new Univalid(opt);
+    return new Univalid();
 };
