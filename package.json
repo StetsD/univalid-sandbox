@@ -4,9 +4,8 @@
   "description": "uni validation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack && webpack-dev-server",
-	"test": "mocha"
+    "test": "mocha",
+    "dev": "webpack && webpack-dev-server"
   },
   "repository": {
     "type": "git",
