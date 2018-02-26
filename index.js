@@ -5,14 +5,14 @@ const UnivalidStrategyForm = require('./modules/univalid-strategy-form');
 
 const univalid = Univalid();
 univalid.setStrategy(UnivalidStrategyForm({
-	$form: '.js-reg-form',
 	core: univalid,
+	$form: '.js-reg-form',
 
-	statusConfig: {
-		targetParent: '.form-group',
-		targetStatus: '.form__msg',
-		// successStatus: true
-	},
+	// statusConfig: {
+	// 	targetParent: '.form-group',
+	// 	targetStatus: '.form__msg',
+	// 	// successStatus: true
+	// },
 
 	clsConfig: {
 		error: 'error',
@@ -20,9 +20,9 @@ univalid.setStrategy(UnivalidStrategyForm({
 	},
 
 	sendConfig: {
-		type: 'POST',
+		type: 'method',
 		url: '/',
-		// notDisableSubmit: true
+		notDisableSubmit: true
 	},
 
 	keyLogger: true,
@@ -74,6 +74,6 @@ univalid.on('end:valid', uni => {
 // })
 
 
-setTimeout(()=>{
-	univalid.get('send');
-}, 1000);
+// setTimeout(()=>{
+// 	univalid.get('send');
+// }, 1000);

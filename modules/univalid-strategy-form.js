@@ -1,197 +1,18 @@
 'use strict';
 
+const {checkOption, checkSelector, collectNodes, collectPackage, setResult} = require('./tools/services.js')
 const UnivalidStrategy = require('./univalid-strategy');
 const keyLogger = require('./tools/filter-handler')();
 const {passScore} = require('./tools/pass-power');
 const axios = require('axios');
 const serialize = require('form-serialize');
 
-function _checkOption(name, opt, type){
-	if(!opt){
-		console.warn(`The "${name}" option is required`);
-		return null;
-	}
-
-	if(typeof opt !== type){
-		console.warn(`The "${name}" option must has ${type} type`);
-		return null;
-	}
-
-	return opt;
-}
-
-function _checkSelector(slc, unique){
-	if(slc){
-		var nodeList = document.querySelectorAll(slc);
-
-		if(!nodeList[0]){
-			console.warn(`Can't find a "${slc}" selector`);
-			return null;
-		}
-
-		if(unique && nodeList.length > 1){
-			console.warn(`The "${slc}" selector must be unique node`);
-			return null;
-		}
-
-		return nodeList[0];
-	}
-}
-
-function _collectNodes(form, node){
-	let nodes = [];
-
-	if(node){
-		nodes.push(node);
-	}else{
-		nodes = [].slice.call(form.querySelectorAll('input, select, textarea'));
-	}
-
-	return nodes;
-}
-
-function _collectPackage(nodes){
-	let packageValidation = [];
-	let mapFields = {};
-
-	if(nodes && nodes.length){
-		for(let i = 0; i < nodes.length; i++){
-			let elem = nodes[i];
-			let tagname = elem.tagName,
-				inputType = elem.type,
-				name = elem.getAttribute('name');
-
-			if(name){
-				if(mapFields[name]){
-					if(inputType !== 'radio'){
-						console.warn(new Error(`The field ${name} is dublicate`));
-					}
-					continue;
-				}
-
-				mapFields[name] = true;
-
-				let type = elem.hasAttribute('data-validation') ?
-						elem.getAttribute('data-validation') === '' ?
-						 	'required' : elem.getAttribute('data-validation')
-						: undefined,
-					filter = elem.getAttribute('data-f'),
-					msg = elem.getAttribute('data-msg');
-
-				if(typeof type === 'undefined')
-					continue;
-
-				if(msg){
-					try{
-						msg = JSON.parse(msg);
-					}catch(e){
-						throw new Error(`Not valid json structure in data-msg of ${name} field`);
-					}
-				}
-
-				let item = {name, type, val: getValue(elem, name, tagname, inputType)};
-
-				if(filter)
-					item.filter = filter;
-				if(msg)
-					item.msg = msg;
-
-				packageValidation.push(item);
-			}
-
-		}
-
-		return packageValidation;
-	}
-
-	function getValue(elem, name, tagname, inputType){
-		if(tagname === 'SELECT'){
-			let options = elem.options,
-				selected = options[elem.selectedIndex];
-
-			if(!selected)
-				return '';
-
-			if(options[0].disabled && selected.value === options[0].value){
-				return '';
-			}
-
-			return selected.value;
-		}
-
-		if(inputType === 'radio'){
-			let groupRadio = document.querySelectorAll(`[name="${name}"]`);
-			for(let i = 0; i < groupRadio.length; i++){
-				if(groupRadio[i].checked){
-					return groupRadio[i].value;
-				}
-				if(i === groupRadio.length - 1){
-					return '';
-				}
-			}
-		}
-
-		if(inputType === 'checkbox'){
-			if(elem.checked)
-				return elem.value;
-
-			return '';
-		}
-
-		return elem.value;
-	}
-}
-
-function _setResult(pack, formSt){
-	if(!formSt.statusConfig || !formSt.statusConfig.targetParent){
-		console.warn(new Error('Nowhere to set errors. Not determined "statusConfig" property in UnivalidStrategyForm.'));
-		return;
-	}
-
-	var notInputStatus = 0;
-
-	if(pack && pack.length){
-		let {targetParent, targetStatus, successStatus} = formSt.statusConfig,
-			lastStatus = formSt.core.getCommonState;
-
-		formSt.$form.classList.add(formSt.clsConfig[lastStatus]);
-
-		pack.forEach(elem => {
-			let input = document.querySelector(`[name="${elem.name}"]`),
-				inputParent = input.closest(targetParent),
-				inputStatus = inputParent.querySelector(targetStatus);
-
-			if(elem.state === 'error'){
-				injectMsg(input, inputStatus, inputParent, elem);
-			}else{
-				successStatus && injectMsg(inputStatus, inputParent, elem);
-			}
-		});
-
-		if(notInputStatus)
-			console.warn(`Not find "${targetStatus}" selector in one of more ${targetParent}`);
-	}
-
-
-
-	function injectMsg(input, statusCont, parent, elem){
-		if(statusCont){
-			statusCont.innerText = elem.msg;
-		}else{
-			notInputStatus++;
-		}
-
-		parent.classList.add(formSt.clsConfig[elem.state]);
-		input.classList.add(formSt.clsConfig[elem.state]);
-	}
-}
-
 module.exports = (opt) => {
 	let _controller = {
 		submit(){
 			this.$form.addEventListener('submit', e => {
 				e.preventDefault();
-				this.core.check(_collectNodes(this.$form));
+				this.core.check(collectNodes(this.$form));
 
 				if(this.core.getCommonState === 'success'){
 					this.send();
@@ -200,7 +21,7 @@ module.exports = (opt) => {
 		},
 		blur(){
 			if(this.keyLogger){
-				let inputs = _collectNodes(this.$form);
+				let inputs = collectNodes(this.$form);
 
 				inputs.forEach(input => {
 					input.addEventListener('blur', e => {
@@ -216,7 +37,7 @@ module.exports = (opt) => {
 							}
 							if(validType){
 								if(!keyLogger.applyFilter(validType, val)){
-									this.core.check(_collectNodes(this.$form, elem));
+									this.core.check(collectNodes(this.$form, elem));
 								}
 							}
 						}
@@ -225,7 +46,7 @@ module.exports = (opt) => {
 			}
 		},
 		focus(){
-			_collectNodes(this.$form)
+			collectNodes(this.$form)
 				.forEach(elem => {
 					elem.addEventListener('focus', e => {
 						this.clearStatuses([e.target]);
@@ -234,7 +55,7 @@ module.exports = (opt) => {
 		},
 		keyup(){
 			if(this.keyLogger){
-				let inputs = _collectNodes(this.$form);
+				let inputs = collectNodes(this.$form);
 
 				inputs.forEach(input => {
 					input.addEventListener('keyup', e => {
@@ -243,7 +64,7 @@ module.exports = (opt) => {
 							validType = elem.getAttribute('data-f');
 
 						if(!keyLogger.applyFilter(validType, val)){
-							this.core.check(_collectNodes(this.$form, elem));
+							this.core.check(collectNodes(this.$form, elem));
 							return false;
 						}else{
 							this.clearStatuses([e.target]);
@@ -269,29 +90,29 @@ module.exports = (opt) => {
 
 			if(opt){
 				if(!opt.core){
-					console.warn(new Error("Don't finded the 'core' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
-					return;
-				}
-				if(!opt.$form){
-					console.warn(new Error("Don't finded the '$form' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
-					return;
+					return console.warn(new Error("Don't finded the 'core' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
 				}
 
 				//Required props
-				this.core = opt.core || {};
-				this.$form = _checkSelector(_checkOption('$form', opt.$form, 'string'), true);
+				this.core = opt.core;
+				this.$form = checkSelector(
+					checkOption('$form', opt.$form, 'string', true, err => this.core.emit('error', err)),
+					true,
+					err => this.core.emit('error', err)
+				);
+				if(!this.$form)
+					return;
 				//Option props
-				this.statusConfig = (typeof opt.statusConfig === 'object') ? opt.statusConfig : false;
-				this.clsConfig = (typeof opt.clsConfig === 'object') ? opt.clsConfig : {error: 'error', success: 'success'};
-				this.passConfig = opt.passConfig || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
-				this.sendConfig = opt.sendConfig;
-				this.keyLogger = (typeof opt.keyLogger === 'boolean') ? opt.keyLogger : false;
-				this.checkPassScore = (typeof opt.checkPassScore === 'object') ? opt.checkPassScore : false;
+				this.clsConfig = checkOption('clsConfig', opt.clsConfig, 'object', false, err => this.core.emit('error', err)) || {error: 'error', success: 'success'};
+				this.passConfig = checkOption('passConfig', opt.passConfig, 'object', false, err => this.core.emit('error', err)) || {min: 6, analysis: ['hasUppercase', 'hasLowercase', 'hasDigits', 'hasSpecials']};
+				this.statusConfig = checkOption('statusConfig', opt.statusConfig, 'object', false, err => this.core.emit('error', err));
+				this.sendConfig = checkOption('sendConfig', opt.sendConfig, 'object', false, err => this.core.emit('error', err));
+				this.keyLogger = checkOption('keyLogger', opt.keyLogger, 'boolean', false, err => this.core.emit('error', err));
+				this.checkPassScore = checkOption('checkPassScore', opt.checkPassScore, 'object', false, err => this.core.emit('error', err));
 
 				this.controller();
 			}else{
-				console.warn(new Error("Don't finded the 'core' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
-				return;
+				return console.warn(new Error("Don't finded the 'core' field during initialized UnivalidStrategyForm. This filed is required. See more to link ..."));
 			}
 	    }
 
@@ -299,8 +120,7 @@ module.exports = (opt) => {
 			this.$form.classList.remove(`${this.clsConfig.error}`, `${this.clsConfig.success}`);
 
 			if(!this.statusConfig || !this.statusConfig.targetParent){
-				console.warn(new Error('Nowhere to set errors. Not determined "statusConfig" property in UnivalidStrategyForm.'));
-				return;
+				return this.core.emit('error', 'Not determined "statusConfig" property in UnivalidStrategyForm. Can`t clear statuses');
 			}
 
 			pack.forEach(elem => {
@@ -318,9 +138,8 @@ module.exports = (opt) => {
 
 		send({
 			newAjaxBody = this.sendConfig,
-			cbSendComplete = this.cbSendComplete,
-			cbSendSuccess = this.cbSendSuccess,
-			cbSendError = this.cbSendError,
+			cbSendSuccess = this.sendConfig.cbSendSuccess,
+			cbSendError = this.sendConfig.cbSendError,
 		} = {}){
 			if(newAjaxBody){
 				let type = (newAjaxBody.type === 'method') ? this.$form.getAttribute('method') : newAjaxBody.type,
@@ -332,10 +151,10 @@ module.exports = (opt) => {
 				$submit && !notDisableSubmit ? $submit['disabled'] = true : null;
 
 				if(!type){
-					return console.warn(new Error('Http Method is not defined. Define it in attributes "send" method or html attribute of form "method"'));
+					return this.core.emit('error', 'Http Method is not defined. Define it in attributes "send" method or html attribute of form "method"');
 				}
 				if(!url){
-					return console.warn(new Error('Url to send is not defined. Define it in attributes "send" method or html attribute of form "action"'));
+					return this.core.emit('error', 'Url to send is not defined. Define it in attributes "send" method or html attribute of form "action"');
 				}
 
 				axios[type.toLowerCase()](url, data)
@@ -345,20 +164,20 @@ module.exports = (opt) => {
 					})
 					.catch(err => {
 						$submit && !notDisableSubmit ? $submit['disabled'] = false : null;
-						cbSendError && cbSendError(res, this);
+						cbSendError && cbSendError(err, this);
 					})
 			}
 		}
 
 	    check(pack, core){
-			let packageValidation = _collectPackage(pack);
+			let packageValidation = collectPackage(pack, err => this.core.emit('error', err));
 
 			for(let i = 0; i < packageValidation.length; i++){
 				core.validate(packageValidation[i]);
 			}
 
 			this.clearStatuses(pack);
-			_setResult(core.getState, this);
+			setResult(core.getState, this, err => this.core.emit('error', err));
 	    }
 
 		clearInputs(inputs){
@@ -397,7 +216,7 @@ module.exports = (opt) => {
 			if(events){
 				for(var e in events){
 					if(_controller[e]){
-						console.warn(new Error('This event name is already exist'));
+						return this.core.emit('error', 'This event name is already exist');
 					}else{
 						_controller[e] = events[e];
 						this.controller(e);
@@ -407,14 +226,14 @@ module.exports = (opt) => {
 		}
 
 		disable(){
-			_collectNodes(this.$form)
+			collectNodes(this.$form)
 				.forEach(elem => {
 					elem.disabled = true;
 				});
 		}
 
 		enable(){
-			_collectNodes(this.$form)
+			collectNodes(this.$form)
 				.forEach(elem => {
 					elem.disabled = false;
 				});
