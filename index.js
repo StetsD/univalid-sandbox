@@ -8,11 +8,11 @@ univalid.setStrategy(UnivalidStrategyForm({
 	core: univalid,
 	$form: '.js-reg-form',
 
-	// statusConfig: {
-	// 	targetParent: '.form-group',
-	// 	targetStatus: '.form__msg',
-	// 	// successStatus: true
-	// },
+	statusConfig: {
+		targetParent: '.form-group',
+		targetStatus: '.form__msg',
+		// successStatus: true
+	},
 
 	clsConfig: {
 		error: 'error',
@@ -21,7 +21,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 
 	sendConfig: {
 		type: 'method',
-		url: '/',
+		url: 'https://e18040a6-40bf-4c1d-a4d1-5273ce7ffd63.mock.pstmn.io/form',
 		notDisableSubmit: true
 	},
 

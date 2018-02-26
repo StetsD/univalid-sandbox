@@ -1,0 +1,6 @@
+{
+  "form": { "errFields": [
+	  {"name": "username", "msg": "This username is already exists"},
+	  {"name": "email", "msg": "This email is already exists"}
+  ] }
+}
