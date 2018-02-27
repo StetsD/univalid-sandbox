@@ -12,9 +12,11 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
     }
 
     check(pack, core){
-        for(let i = 0; i < pack.length; i++){
-            core.validate(pack[i]);
-        }
+		if(pack && core){
+			for(let i = 0; i < pack.length; i++){
+	            core.validate(pack[i]);
+	        }
+		}
     }
 
     getValidationHandlers(){
@@ -26,7 +28,8 @@ class UnivalidStrategyDefault extends UnivalidStrategy {
 	}
 
 	get(val){
-		console.warn('Getter of default strategy is locked');
+		console.warn(new Error('Getter of default strategy is locked'));
+		return null;
 	}
 }
 
