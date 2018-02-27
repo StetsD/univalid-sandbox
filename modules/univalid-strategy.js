@@ -29,11 +29,26 @@ class UnivalidStrategy {
 	}
 
 	applyFilter(filter, val){
-		if(filterHandler.innerTmp[filter]){
-			return filterHandler.applyFilter(filter, val);
+		if(!filter){
+			console.warn(new Error(`Filter attr is not defined`));
+			return true;
 		}
 
-		return true;
+		if(!val){
+			console.warn(new Error(`There is not value to validation`));
+			return true;
+		}
+
+		if(typeof filter === 'function'){
+			return filter(val);
+		}
+
+		if(!filterHandler.innerTmp[filter]){
+			console.warn(new Error(`The "${filter}" filter not found in validHandlers`));
+			return true;
+		}
+
+		return filterHandler.applyFilter(filter, val);
 	}
 
     check(){

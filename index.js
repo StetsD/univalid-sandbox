@@ -3,54 +3,76 @@
 const Univalid = require('./modules/univalid');
 const UnivalidStrategyForm = require('./modules/univalid-strategy-form');
 
-const univalid = Univalid();
-univalid.setStrategy(UnivalidStrategyForm({
-	core: univalid,
-	$form: '.js-reg-form',
+// const univalid = Univalid();
+// univalid.setStrategy(UnivalidStrategyForm({
+// 	core: univalid,
+// 	$form: '.js-reg-form',
+//
+// 	statusConfig: {
+// 		targetParent: '.form-group',
+// 		targetStatus: '.form__msg',
+// 		// successStatus: true
+// 	},
+//
+// 	clsConfig: {
+// 		error: 'error',
+// 		success: 'success'
+// 	},
+//
+// 	sendConfig: {
+// 		type: 'method',
+// 		url: 'https://e18040a6-40bf-4c1d-a4d1-5273ce7ffd63.mock.pstmn.io/form',
+// 		notDisableSubmit: true
+// 	},
+//
+// 	keyLogger: true,
+//
+// 	checkPassScore: {
+// 		target: 'input[type="password"]',
+// 		cb: val => {
+// 			console.log(val);
+// 		}
+// 	},
+//
+// 	passConfig: {
+// 		min: 10,
+// 		analysis: ['hasUppercase']
+// 	}
+// }));
 
-	statusConfig: {
-		targetParent: '.form-group',
-		targetStatus: '.form__msg',
-		// successStatus: true
-	},
-
-	clsConfig: {
-		error: 'error',
-		success: 'success'
-	},
-
-	sendConfig: {
-		type: 'method',
-		url: 'https://e18040a6-40bf-4c1d-a4d1-5273ce7ffd63.mock.pstmn.io/form',
-		notDisableSubmit: true
-	},
-
-	keyLogger: true,
-
-	checkPassScore: {
-		target: 'input[type="password"]',
-		cb: val => {
-			console.log(val);
-		}
-	},
-
-	passConfig: {
-		min: 10,
-		analysis: ['hasUppercase']
-	}
-}));
-
-univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
-	console.log('Check new maza event');
-})}})
+// univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
+// 	console.log('Check new maza event');
+// })}})
 
 // univalid.set('core', univalid);
 
 
 const {unipack} = require('./modules/data');
 const univalid2 = Univalid();
-console.log(univalid2.get('passConfig'))
-univalid2.check(unipack)
+univalid2.setValidHandler({
+	'lol': val => {
+		console.log(val, 'Valid');
+		return true;
+	}
+})
+// console.log(univalid2.getValidHandler)
+univalid2.check([
+	{
+		name: 'username',
+		val: 'Uriy',
+		type: 'lol',
+		filter: val => {
+			console.log('Filter', val);
+			return true;
+		},
+		msg: {
+			empty: 'You shall not pass',
+			invalid: 'Validation error',
+			filter: 'Filter error',
+			success: 'All right'
+		}
+	}
+])
 console.log(univalid2.getState);
 
 

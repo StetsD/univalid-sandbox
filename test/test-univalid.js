@@ -39,7 +39,7 @@ describe('Univalid', function() {
 		            name: 'email',
 		            val: 'Uriy@mazafaka.com',
 		            type: 'email',
-		            filter: /[a-z]|\s/gi,
+		            filter: 'oL',
 		            msg: {
 		                empty: 'You shall not pass',
 		                invalid: 'Bad email',
