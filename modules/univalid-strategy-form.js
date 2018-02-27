@@ -12,6 +12,7 @@ module.exports = (opt) => {
 		submit(){
 			this.$form.addEventListener('submit', e => {
 				e.preventDefault();
+				this.core.emit('e:submit', this.core, e);
 				this.core.check(collectNodes(this.$form));
 
 				if(this.core.getCommonState === 'success'){
@@ -25,6 +26,7 @@ module.exports = (opt) => {
 
 				inputs.forEach(input => {
 					input.addEventListener('blur', e => {
+						this.core.emit('e:blur', this.core, e);
 						var elem = e.target,
 							val = elem.value,
 							tag = elem.tagName,
@@ -49,6 +51,7 @@ module.exports = (opt) => {
 			collectNodes(this.$form)
 				.forEach(elem => {
 					elem.addEventListener('focus', e => {
+						this.core.emit('e:focus', this.core, e);
 						this.clearStatuses([e.target]);
 					}, false);
 				});
@@ -59,15 +62,18 @@ module.exports = (opt) => {
 
 				inputs.forEach(input => {
 					input.addEventListener('keyup', e => {
-						let elem = e.target,
-							val = elem.value,
-							validType = elem.getAttribute('data-f');
+						this.core.emit('e:keyup', this.core, e);
+						if(e.key !== 'Tab'){
+							let elem = e.target,
+								val = elem.value,
+								validType = elem.getAttribute('data-f');
 
-						if(!keyLogger.applyFilter(validType, val)){
-							this.core.check(collectNodes(this.$form, elem));
-							return false;
-						}else{
-							this.clearStatuses([e.target]);
+							if(!keyLogger.applyFilter(validType, val)){
+								this.core.check(collectNodes(this.$form, elem));
+								return false;
+							}else{
+								this.clearStatuses([e.target]);
+							}
 						}
 					});
 				});
@@ -117,6 +123,7 @@ module.exports = (opt) => {
 	    }
 
 		clearStatuses(pack){
+			this.core.emit('clear:statuses', this.core, pack);
 			this.$form.classList.remove(`${this.clsConfig.error}`, `${this.clsConfig.success}`);
 
 			if(!this.statusConfig || !this.statusConfig.targetParent){
@@ -142,6 +149,7 @@ module.exports = (opt) => {
 			cbSendError = this.sendConfig.cbSendError,
 		} = {}){
 			if(newAjaxBody){
+				this.core.emit('send:form', this.core);
 				let type = (newAjaxBody.type === 'method') ? this.$form.getAttribute('method') : newAjaxBody.type,
 					url = (newAjaxBody.url === 'action') ? this.$form.getAttribute('action') : newAjaxBody.url,
 					data = (!newAjaxBody.data) ? serialize(this.$form, {hash: true}) : newAjaxBody.data,
@@ -160,6 +168,7 @@ module.exports = (opt) => {
 				axios[type.toLowerCase()](url, data)
 					.then(res => {
 						$submit && !notDisableSubmit ? $submit['disabled'] = false : null;
+						this.clearInputs();
 						cbSendSuccess && cbSendSuccess(res, this);
 					})
 					.catch(err => {
@@ -181,6 +190,7 @@ module.exports = (opt) => {
 	    }
 
 		clearInputs(inputs){
+			this.core.emit('clear:inputs', this.core);
 			if(!inputs){
 				this.$form.reset();
 			}else{

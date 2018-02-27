@@ -34,11 +34,6 @@ class UnivalidStrategy {
 			return true;
 		}
 
-		if(!val){
-			console.warn(new Error(`There is not value to validation`));
-			return true;
-		}
-
 		if(typeof filter === 'function'){
 			return filter(val);
 		}
