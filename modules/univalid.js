@@ -15,6 +15,7 @@ module.exports = () => {
 	let _strategy = null;
 	var _state = [];
 	let _validationHandlers = {};
+	let _msgConfig = MSG_CONFIG;
 
 	class Univalid extends EventEmitter {
 	    constructor(){
@@ -26,15 +27,6 @@ module.exports = () => {
 
 			this.setStrategy(new UnivalidStrategyDefault());
 			return this;
-	    }
-
-	    setStrategy(strategy){
-	        notEmpty(strategy, 'Strategy of validation is not defined');
-	        isObject(strategy, 'Strategy must be an object');
-
-	        _strategy = strategy;
-			this.setValidHandler(strategy.getValidationHandlers());
-	        return this;
 	    }
 
 	    check(pack){
@@ -70,12 +62,22 @@ module.exports = () => {
 
 				msg && msg[status] ?
 					msgResult = msg[status] :
-					msgResult = MSG_CONFIG[status];
+					msgResult = _msgConfig[status];
 
 	            _state.push({name, type, state, status, msg: msgResult});
 	        }
 
 			this.emit('end:valid:field', {name, type, state, status, msg: msgResult});
+	    }
+
+		setStrategy(strategy){
+	        notEmpty(strategy, 'Strategy of validation is not defined');
+	        isObject(strategy, 'Strategy must be an object');
+
+	        _strategy = strategy;
+			this.setValidHandler(strategy.getValidationHandlers());
+			this.emit('change:strategy', this);
+	        return this;
 	    }
 
 	    setValidHandler(pack){
@@ -85,12 +87,30 @@ module.exports = () => {
 	        if(Object.keys(pack).length !== 0){
 	            for(let key in pack){
 	                _validationHandlers[key] = pack[key];
-	                this.emit('set:newValidationHandler', key, pack[key]);
+	                this.emit('set:new-ValidationHandler', key, pack[key]);
 	            }
 	        }else{
 	            this.emit('error', 'Pack of validation is empty');
 	        }
 	    }
+
+		setMsgConfig(config){
+			if(!config){
+				return this.emit('error', 'msgConfig of validation handlers is not defined');
+			}
+			let notAllReqFields = true;
+			['empty', 'invalid', 'filter', 'success'].forEach(field => {
+				if(!config[field]){
+					notAllReqFields = false;
+					return this.emit('error', `The "${field}" field is required in msgConfig`);
+				}
+			});
+
+			if(notAllReqFields){
+				_msgConfig = config;
+				this.emit('change:msg-config', this);
+			}
+		}
 
 		set(option, val){
 			let strOpt = _strategy[option];
@@ -105,6 +125,7 @@ module.exports = () => {
 					return this.emit('error', `The value "${val}" of setter has bad type`);
 
 				_strategy.set(option, val);
+				this.emit('set:new-prop-strategy', this);
 			}
 		}
 
@@ -121,6 +142,7 @@ module.exports = () => {
 
 		clearState(){
 			_state = [];
+			this.emit('clear:state', this);
 		}
 
 		get getValidHandler(){
@@ -143,6 +165,8 @@ module.exports = () => {
 				}
 
 				return 'success';
+			}else{
+				return null;
 			}
 		}
 	}

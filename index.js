@@ -54,8 +54,9 @@ univalid2.setValidHandler({
 		console.log(val, 'Valid');
 		return true;
 	}
-})
-// console.log(univalid2.getValidHandler)
+});
+univalid2.set('passConfig', {min: 4, analysis: ['hasUppercase']});
+univalid2.setMsgConfig({empty: 'NEW EMPTY ERROR', invalid: 'NEW INVALID', filter: "NEW FILTER", success: 'SUCCESS NEWNEW'})
 univalid2.check([
 	{
 		name: 'username',
@@ -71,6 +72,11 @@ univalid2.check([
 			filter: 'Filter error',
 			success: 'All right'
 		}
+	},
+	{
+		name: 'password',
+		val: '98Dd',
+		type: 'password'
 	}
 ])
 console.log(univalid2.getState);
