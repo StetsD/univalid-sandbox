@@ -6,7 +6,7 @@ function checkOption(name, opt, type, required, cbErr){
 		return null;
 	}
 
-	if(typeof opt !== type){
+	if(opt && typeof opt !== type){
 		cbErr(`The "${name}" option must has "${type}" type`);
 		return null;
 	}
@@ -158,7 +158,7 @@ function setResult(pack, formSt, cbErr){
 			if(elem.state === 'error'){
 				injectMsg(input, inputStatus, inputParent, elem);
 			}else{
-				successStatus && injectMsg(inputStatus, inputParent, elem);
+				successStatus && injectMsg(input, inputStatus, inputParent, elem);
 			}
 		});
 

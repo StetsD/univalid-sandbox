@@ -21,7 +21,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 
 	sendConfig: {
 		type: 'method',
-		url: 'https://e18040a6-40bf-4c1d-a4d1-5273ce7ffd63.mock.pstmn.io/form',
+		url: '/form',
 		notDisableSubmit: true
 	},
 
@@ -41,7 +41,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 }));
 
 univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
-	console.log('Check new maza event');
+	univalid.get('clsConfig');
 })}})
 
 univalid.set('core', univalid);
