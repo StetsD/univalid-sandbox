@@ -1,5 +1,7 @@
 'use strict';
 
+//add new schema
+
 const {EventEmitter} = require('events');
 const UnivalidStrategyDefault = require('./univalid-strategy-default');
 
