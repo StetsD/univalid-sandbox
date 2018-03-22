@@ -20,7 +20,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 	},
 
 	sendConfig: {
-		type: 'method',
+		type: 'get',
 		url: '/form',
 		notDisableSubmit: true
 	},
@@ -39,7 +39,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 		analysis: ['hasUppercase']
 	}
 }));
-
+univalid.get('send');
 univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 	univalid.get('clsConfig');
 })}})
