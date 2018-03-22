@@ -45,7 +45,8 @@ univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 })}})
 
 univalid.set('core', univalid);
-
+univalid.setMsgConfig({filter: "ERROR"});
+univalid.toggleDefaultMsgConfig();
 
 const {unipack} = require('./modules/data');
 const univalid2 = Univalid();
@@ -79,4 +80,5 @@ univalid2.check([
 		type: 'password'
 	}
 ])
+univalid2.setDefaultMsgConfig({empty: 'Ошибка'});
 console.log(univalid2.getState);
