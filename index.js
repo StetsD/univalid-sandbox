@@ -44,6 +44,15 @@ univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 	univalid.get('clsConfig');
 })}})
 
+univalid.setValidHandler({
+	'mmm': val => {
+		if(val.match(/reg:mmm:.$/)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+})
 univalid.on('end:valid', arg => {
 	console.log(univalid.getState)
 });
