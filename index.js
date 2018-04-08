@@ -44,6 +44,10 @@ univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 	univalid.get('clsConfig');
 })}})
 
+univalid.on('end:valid', arg => {
+	console.log(univalid.getState)
+});
+
 univalid.set('core', univalid);
 univalid.setMsgConfig({filter: "ERROR"});
 univalid.toggleDefaultMsgConfig();
@@ -76,7 +80,7 @@ univalid2.check([
 	},
 	{
 		name: 'password',
-		val: '98Dd',
+		val: undefined,
 		type: 'password'
 	}
 ])
