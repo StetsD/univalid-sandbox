@@ -90,7 +90,8 @@ univalid2.check([
 	{
 		name: 'password',
 		val: undefined,
-		type: 'password'
+		type: 'required',
+		filter: 'oC'
 	}
 ])
 univalid2.setDefaultMsgConfig({empty: 'Ошибка'});

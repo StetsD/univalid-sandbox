@@ -65,7 +65,7 @@ module.exports = () => {
 		            var {state, status} = decision(val, condition);
 		            var msgResult;
 
-					if(filter && !_strategy.applyFilter(filter, val)){
+					if(condition && filter && !_strategy.applyFilter(filter, val)){
 						state = 'error';
 						status = 'filter';
 					}
