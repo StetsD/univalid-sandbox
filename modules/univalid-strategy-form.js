@@ -186,7 +186,7 @@ module.exports = (opt) => {
 			}
 
 			this.clearStatuses(pack);
-			setResult(this.core.getState, this, err => this.core.emit('error', err));
+			this.setStatuses(this.core.getState);
 	    }
 
 		clearInputs(inputs){
@@ -223,7 +223,7 @@ module.exports = (opt) => {
 		}
 
 		setStatuses(data){
-			Array.isArray(data) && data.length && 
+			Array.isArray(data) && data.length &&
 			setResult(data, this, err => this.core.emit('error', err));
 		}
 
