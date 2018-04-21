@@ -11,7 +11,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 	statusConfig: {
 		targetParent: '.form-group',
 		targetStatus: '.form__msg',
-		// successStatus: true
+		// successStatus: true,
 	},
 
 	clsConfig: {
@@ -21,8 +21,14 @@ univalid.setStrategy(UnivalidStrategyForm({
 
 	sendConfig: {
 		type: 'get',
-		url: '/form',
-		notDisableSubmit: true
+		url: '/data/res.json',
+		notDisableSubmit: true,
+		cbSendSuccess: (res, form) => {
+			form.setStatuses(res.data);
+		},
+		cbSendError: (err, form) => {
+			console.log(err.response, form);
+		}
 	},
 
 	keyLogger: true,
@@ -37,7 +43,9 @@ univalid.setStrategy(UnivalidStrategyForm({
 	passConfig: {
 		min: 10,
 		analysis: ['hasUppercase']
-	}
+	},
+
+
 }));
 univalid.get('send');
 univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
@@ -46,11 +54,12 @@ univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 
 univalid.setValidHandler({
 	'mmm': val => {
-		if(val.match(/reg:mmm:.$/)){
-			return true;
-		}else{
-			return false;
-		}
+		// if(val.match(/reg:mmm:.$/)){
+		// 	return true;
+		// }else{
+		// 	return false;
+		// }
+		return true;
 	}
 })
 univalid.on('end:valid', arg => {

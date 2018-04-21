@@ -1,0 +1,32 @@
+[
+	{
+		"name": "username",
+		"state": "error",
+		"msg": "megaerror"
+	},
+	{
+		"name": "email",
+		"state": "error",
+		"msg": "megaerror email"
+	},
+	{
+		"name": "lastname",
+		"state": "error",
+		"msg": "megaerror lastname"
+	},
+	{
+		"name": "phone",
+		"state": "error",
+		"msg": "megaerror phone"
+	},
+	{
+		"name": "password",
+		"state": "error",
+		"msg": "megaerror password"
+	},
+	{
+		"name": "bday[mouth]",
+		"state": "error",
+		"msg": "megaerror bday[mouth]"
+	}
+]

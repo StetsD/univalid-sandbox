@@ -222,6 +222,11 @@ module.exports = (opt) => {
 			}
 		}
 
+		setStatuses(data){
+			Array.isArray(data) && data.length && 
+			setResult(data, this, err => this.core.emit('error', err));
+		}
+
 		addEvent(events){
 			if(events){
 				for(var e in events){
