@@ -11,7 +11,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 	statusConfig: {
 		targetParent: '.form-group',
 		targetStatus: '.form__msg',
-		// successStatus: true
+		// successStatus: true,
 	},
 
 	clsConfig: {
@@ -21,8 +21,14 @@ univalid.setStrategy(UnivalidStrategyForm({
 
 	sendConfig: {
 		type: 'get',
-		url: '/form',
-		notDisableSubmit: true
+		url: '/data/res.json',
+		notDisableSubmit: true,
+		cbSendSuccess: (res, form) => {
+			form.setStatuses(res.data);
+		},
+		cbSendError: (err, form) => {
+			console.log(err.response, form);
+		}
 	},
 
 	keyLogger: true,
@@ -37,7 +43,9 @@ univalid.setStrategy(UnivalidStrategyForm({
 	passConfig: {
 		min: 10,
 		analysis: ['hasUppercase']
-	}
+	},
+
+
 }));
 univalid.get('send');
 univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
@@ -86,8 +94,9 @@ univalid2.check([
 	},
 	{
 		name: 'password',
-		val: '98Dd',
-		type: 'password'
+		val: undefined,
+		type: 'required',
+		filter: 'oC'
 	}
 ])
 univalid2.setDefaultMsgConfig({empty: 'Ошибка'});
