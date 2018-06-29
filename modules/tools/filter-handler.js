@@ -109,6 +109,7 @@ class FilterHandler {
 }
 
 let _parseReg = function(string, regs){
+    console.log(string);
 	for(let i = 0; i < regs.length; i++){
 		if(string.match(regs[i])){
 			return false;
