@@ -47,7 +47,7 @@ univalid.setStrategy(UnivalidStrategyForm({
 
 
 }));
-univalid.get('send');
+// univalid.get('send');
 univalid.get('addEvent', {maza(){document.addEventListener('click', ()=>{
 	univalid.get('clsConfig');
 })}})
@@ -97,7 +97,13 @@ univalid2.check([
 		val: undefined,
 		type: 'required',
 		filter: 'oC'
-	}
+	},
+	{
+		name: 'number',
+		val: 65445,
+		type: 'lol',
+		filter: 'oL'
+	},
 ])
 univalid2.setDefaultMsgConfig({empty: 'Ошибка'});
 console.log(univalid2.getState);
