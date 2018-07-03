@@ -104,6 +104,7 @@ univalid2.check([
 		type: 'lol',
 		filter: 'oL'
 	},
-])
+]);
+
 univalid2.setDefaultMsgConfig({empty: 'Ошибка'});
 console.log(univalid2.getState);
