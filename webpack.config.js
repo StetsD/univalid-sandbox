@@ -2,10 +2,13 @@ const path = require('path');
 
 
 module.exports = {
-    entry: './index.js',
+    entry: {
+		univalid: './index.js',
+		'geo-rx': './geo-rx.js'
+	},
     output: {
         path: path.resolve(__dirname, 'public'),
-        filename: 'univalid.js'
+        filename: '[name].js'
     },
 	devtool: 'eval',
 	devServer: {
