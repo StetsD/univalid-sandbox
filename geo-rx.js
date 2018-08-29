@@ -30,6 +30,7 @@ const locations = new Observable((observer) => {
 const locationsSubscription = locations.subscribe(
 	function(position) {
 		console.log('Current Position: ', position);
+		document.title = position.coords.latitude.toFixed(3)
 	},
 	function(msg) {
 		console.log('Error Getting Location: ', msg);
